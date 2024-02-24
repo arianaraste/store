@@ -1,8 +1,14 @@
-const Controller = require("../controllers")
+const { authSchema } = require("../../validators/user/user.auth.schema");
+const Controller = require("../controllers");
+const errors = require("http-errors")
 
 module.exports = new class HomeController extends Controller {
-    indexpage(req , res ,next){
-       return res.status(200).send("indexpage")
+    async indexpage(req , res ,next){
+       try {
+        res.status(200).send("indexpage")
+       } catch (error) {
+        next(error)
+       }
     }
 };
 

@@ -1,4 +1,4 @@
-const autoBind = require("auto-bind")
+const autoBind = require("auto-bind");
 
 class Controller {
     constructor(){
@@ -6,4 +6,4 @@ class Controller {
     };
     
 };
-module.exports =   Controller
+module.exports =  Controller

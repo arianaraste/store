@@ -1,20 +1,26 @@
+const { object } = require("joi");
 const { default: mongoose } = require("mongoose");
 
 const Schema = new mongoose.Schema({
-    first_name : {type : String , required : true},
-    last_name : {type : String , required : true},
+    first_name : {type : String},
+    last_name : {type : String },
     profileImg : {type : [String]},
-    phone : {type : String},
-    email : {type : String ,  required : true},
-    username : {type : String ,  required : true},
-    password : {type : String , require : true},
+    phoneNumber : {type : String,required : true},
+    email : {type : String},
+    username : {type : String , lowercase : true },
+    password : {type : String },
     Role : {type : [String] , default : ["USER"]},
     bills : {type : [] , default : []},
-    discount_code : {type : Number , default : 0}
-    
+    discount_code : {type : Number , default : 0},
+    OTP : { type : Object , default  :{
+        code : 0 ,
+        expireTime  : 0
+
+     }
+    }
 
 });
 
 module.exports = {
-    UsersSchema :  mongoose.model("user",Schema)
+    UserModel :  mongoose.model("user",Schema)
 }

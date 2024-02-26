@@ -5,6 +5,9 @@ const { AllRoutes } = require("./router/router");
 const errors = require("http-errors")
 const { default: mongoose } = require("mongoose");
 const morgan = require("morgan");
+const SwaggerUi = require("swagger-ui-express");
+const SwaggerJsDoc = require("swagger-jsdoc");
+const swaggerJSDoc = require("swagger-jsdoc");
 module.exports =  class Application {
     #app = express()
     #DB_URI;
@@ -22,7 +25,29 @@ module.exports =  class Application {
         this.#app.use(morgan("dev"))
         this.#app.use(express.json());
         this.#app.use(express.urlencoded({extended : "true"}));
-        this.#app.use(express.static(path.join(__dirname , ".." , "public")))
+        this.#app.use(express.static(path.join(__dirname , ".." , "public")));
+        this.#app.use("/api-docs" , SwaggerUi.serve , SwaggerUi.setup(swaggerJSDoc({
+            swaggerDefinition : {
+                info : {
+                    title : "Store",
+                    version : "1.0.0",
+                    description : "this project is a Store web app",
+                    contact : {
+                        name : "arian araste" , 
+                        email : "aryan.araste@gmail.com",
+                        url : "https://github.com/arianaraste"
+                    }
+                },
+                servers : [
+                    {
+                        url :"http://localhost:5000"
+                    }
+                ]
+            },
+            apis : ["./app/router/**/*.js"]
+
+        })))
+
     };
     createServer(){
     http.createServer(this.#app).listen(this.#PORT , ()=>{

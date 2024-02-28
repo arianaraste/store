@@ -1,42 +1,66 @@
 const errors = require("http-errors");
-const { authSchema } = require("../../validators/user/user.auth.schema");
-const { RandomNumberGenrator, OTPGenerator, falseData } = require("../../../utills/function");
+const { confirmLoginSchema, loginSchema } = require("../../validators/user/user.auth.schema");
+const { RandomNumberGenrator, OTPGenerator, accsesToken} = require("../../../utills/function");
 const { UsersSchema, UserModel } = require("../../../models/users");
-const { object } = require("joi");
+const {falseData} = require("../../../utills/constans")
 class UserAuthController {
     async login(req , res , next){
         try {
-            console.log(req.body);
-            const body = await authSchema.validateAsync(req.body);
+            
+            await loginSchema.validateAsync(req.body);
             const {phoneNumber} = req.body;
-            const OTP = OTPGenerator()
+            const OTPPack = OTPGenerator();
             const user = await UserModel.findOne({phoneNumber});
+            console.log(OTPPack);
+            Object.keys(OTPPack).forEach(key => {
+                if(falseData.includes(OTPPack[key])) delete OTPPack[key];
+            });
             if(!user){
                 const userCreate = await UserModel.create({
                     phoneNumber,
-                    OTP,
+                    OTP : OTPPack,
                     Role : "USER"
                 });
                 if(!userCreate) throw errors.Unauthorized("ورود انجام نشد")
-                console.log("!");
             }
-            
-                Object.keys(OTP).forEach(key => {
-                    if(falseData.includes(OTP[key])) delete OTP[key];
-                });
-                const updateUser = await UserModel.updateOne({phoneNumber} , {$set : OTP})
-                console.log("!")
-            
+
+            const updateUser = await UserModel.updateOne({phoneNumber}, {$set : {OTP : OTPPack}})
+                
             return res.status(200).send({
                 statusCode : 200,
-                message : OTP.OTP+":کد ورود شما",
-        
+                message : OTPPack.Code+":کد ورود شما",
             })
         } catch (error) {
             console.log(error);
             next(errors.BadRequest(error.message))
-        }
+        };
     };
+    async confirmLogin(req , res , next){
+        try {
+            console.log(req.body);
+        await confirmLoginSchema.validateAsync(req.body);
+        const {phoneNumber , Code} = req.body
+        const user = await UserModel.findOne({phoneNumber});
+        if(!user) throw errors.NotFound("کاربری یافت نشد");
+        console.log(+Code);
+        console.log(user.OTP.code);
+        console.log(user);
+            
+        if(+Code !== user.OTP.Code ) throw errors.Unauthorized("کد وارد شده صحیح نمی باشد")
+        if(user.OTP.expireTime < Date.now()) throw errors.Unauthorized("کد وارد شده منقضی میباشد");
+        const token = await accsesToken(user._id);
+        
+        return res.status(200).json({
+            data : {
+                token
+            }
+        })
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+        }
+    }
     
 };;
 

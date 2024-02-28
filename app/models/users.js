@@ -12,10 +12,9 @@ const Schema = new mongoose.Schema({
     Role : {type : [String] , default : ["USER"]},
     bills : {type : [] , default : []},
     discount_code : {type : Number , default : 0},
-    OTP : { type : Object , default  :{
-        code : 0 ,
+    OTP : { type : Object , default  : {
+        Code : 0 ,
         expireTime  : 0
-
      }
     }
 

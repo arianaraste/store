@@ -1,23 +1,46 @@
 const { date } = require("joi");
-const { Long } = require("mongodb");
-
+const JWT = require("jsonwebtoken");
+const { UserModel } = require("../models/users");
+const errors = require("http-errors");
+const {SECRET_KEY} = require("./constans")
 function randomNumber(){
    return Math.floor((Math.random() * 90000)+ 10000)
 };
 function OTPMaker(){
-    const OTP = randomNumber()
-    const expireTime = (new Date().getTime()) + 120000;
+    const Code = randomNumber()
+    const expireTime = Date.now() + 120000;
     let OTPPack = {
-        OTP,
+        Code,
         expireTime
     }
-    console.log(OTPPack);
     return OTPPack;
 }
-const falseData = ["" , " ", null , 0 , undefined , "0" , NaN];
+function accsesToken (userId){
+    return new Promise(async (resolve , reject)=>{
+        const user = await UserModel.findById(userId);
+        
+        console.log(SECRET_KEY);
+        JWT.sign(
+            {
+                phoneNumber : user.phoneNumber,
+                userId : user._id
+            },
+            SECRET_KEY,
+            {
+                expiresIn: "1h"
+            },
+            (err , token)=>{
+                console.log(err);
+                if(err) throw errors.InternalServerError("خطای سرور");
+                resolve(token)
+            }
+        )
+    })
+}
 
 module.exports = {
     RandomNumberGenerator : randomNumber,
     OTPGenerator : OTPMaker,
-    falseData
+    accsesToken
+
 }

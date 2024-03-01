@@ -1,4 +1,3 @@
-const { HomeRoutes } = require("./api");
 const {AuthRouter} = require("./user/auth.router");
 
 

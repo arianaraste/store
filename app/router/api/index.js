@@ -1,7 +1,6 @@
 const homeControllers = require("../../http/controller/api/homeControllers");
-const verifyAccsesToken = require("../../http/middlewares/verifyAccsesToken");
 const router = require("express").Router();
-
+const {verifyaccsesToken} = require("../../http/middlewares/verifyAccsesToken")
 /**
  * tags:
  *      name: index
@@ -25,7 +24,9 @@ const router = require("express").Router();
  *              
  */
 
-router.get("/" ,verifyAccsesToken, homeControllers.indexpage)
+router.get("/" ,verifyaccsesToken, homeControllers.indexpage)
+
+
 module.exports = {
     HomeRoutes : router
 }

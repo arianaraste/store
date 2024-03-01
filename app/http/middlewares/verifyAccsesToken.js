@@ -4,13 +4,13 @@ const { SECRET_KEY } = require("../../utills/constans");
 const { UserModel } = require("../../models/users");
 function verifyaccsesToken(req , res ,next){
     try {
-        const [Bearer , token] = req.headers?.accsestoken.split(" ");
-        console.log(Bearer);
+        const [Bearer , token] = req.headers?.accsestoken.split(" ");  
         console.log(token);
         if(!token) throw errors.Unauthorized("وارد حساب کاربری خود شوید");
         JWT.verify(token,SECRET_KEY ,async (err , payload)=>{
             if(err) throw errors.Unauthorized(err.message);
             const {phoneNumber} = payload;
+            console.log(payload);
             const user = await UserModel.findOne({phoneNumber} , {password : 0 , OTP : 0})  ;
             if(!user) throw errors.Unauthorized("حساب کاربری یافت نشد") ;
             req.user =  user;
@@ -22,6 +22,6 @@ function verifyaccsesToken(req , res ,next){
         next(error.message)
     }
 };
-module.exports = [
+module.exports = {
     verifyaccsesToken
-]
+};

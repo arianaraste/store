@@ -47,7 +47,7 @@ router.post("/login" , UserAuthController.login);
  *          post:
  *              summary: check otp and send token for accses
  *              description: user have to confirm authentication and then we send a accses token
- *              tags: [Confirm]
+ *              tags: [user-auth]
  *              parameters:
  *              -   name: phoneNumber
  *                  description: input your phoneNumber
@@ -71,6 +71,29 @@ router.post("/login" , UserAuthController.login);
  */
 
 router.post("/confirmLogin" , UserAuthController.confirmLogin);
+
+/**
+ * @swagger
+ * 
+ *  paths:
+ *      /user/signRefreshToken:
+ *          post:
+ *              summary: sign Refresh Token
+ *              description : sign refresh token and send acccses token with new Refresh token
+ *              tags: [user-auth]
+ *              parameters: 
+ *              -   name: RefreshToken
+ *                  description: input your RefreshToken
+ *                  in: formData
+ *                  type: string
+ *                  required: true
+ *              responses : 
+ *                  200: 
+ *                      description : succes
+ * 
+ */
+
+router.post("/signRefreshToken" ,UserAuthController.signrefreshToken)
 
 module.exports = {
     AuthRouter : router

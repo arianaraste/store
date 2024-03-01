@@ -16,8 +16,8 @@ const Schema = new mongoose.Schema({
         Code : 0 ,
         expireTime  : 0
      }
-    }
-
+    },
+    Token : {type : String}
 });
 
 module.exports = {

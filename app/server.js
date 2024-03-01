@@ -8,6 +8,7 @@ const morgan = require("morgan");
 const SwaggerUi = require("swagger-ui-express");
 const SwaggerJsDoc = require("swagger-jsdoc");
 const swaggerJSDoc = require("swagger-jsdoc");
+const cors = require("cors")
 module.exports =  class Application {
     #app = express()
     #DB_URI;
@@ -22,7 +23,8 @@ module.exports =  class Application {
         this.errorHandler();
     };
     configApplication(){
-        this.#app.use(morgan("dev"))
+        this.#app.use(cors());
+        this.#app.use(morgan("dev"));
         this.#app.use(express.json());
         this.#app.use(express.urlencoded({extended : "true"}));
         this.#app.use(express.static(path.join(__dirname , ".." , "public")));

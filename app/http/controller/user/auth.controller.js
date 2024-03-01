@@ -1,17 +1,15 @@
 const errors = require("http-errors");
 const { confirmLoginSchema, loginSchema } = require("../../validators/user/user.auth.schema");
-const { RandomNumberGenrator, OTPGenerator, accsesToken} = require("../../../utills/function");
+const { RandomNumberGenrator, OTPGenerator, accsesToken, AccsesRefreshToken, verifyRefreshToken} = require("../../../utills/function");
 const { UsersSchema, UserModel } = require("../../../models/users");
-const {falseData} = require("../../../utills/constans")
+const {falseData} = require("../../../utills/constans");
 class UserAuthController {
     async login(req , res , next){
         try {
-            
             await loginSchema.validateAsync(req.body);
             const {phoneNumber} = req.body;
             const OTPPack = OTPGenerator();
             const user = await UserModel.findOne({phoneNumber});
-            console.log(OTPPack);
             Object.keys(OTPPack).forEach(key => {
                 if(falseData.includes(OTPPack[key])) delete OTPPack[key];
             });
@@ -37,28 +35,44 @@ class UserAuthController {
     };
     async confirmLogin(req , res , next){
         try {
-            console.log(req.body);
         await confirmLoginSchema.validateAsync(req.body);
         const {phoneNumber , Code} = req.body
         const user = await UserModel.findOne({phoneNumber});
         if(!user) throw errors.NotFound("کاربری یافت نشد");
-        console.log(+Code);
-        console.log(user.OTP.code);
-        console.log(user);
-            
         if(+Code !== user.OTP.Code ) throw errors.Unauthorized("کد وارد شده صحیح نمی باشد")
         if(user.OTP.expireTime < Date.now()) throw errors.Unauthorized("کد وارد شده منقضی میباشد");
         const token = await accsesToken(user._id);
-        
+        const SignRefreshToken = await AccsesRefreshToken(user._id);
         return res.status(200).json({
             data : {
-                token
+                token,
+                SignRefreshToken
             }
         })
 
         } catch (error) {
             console.log(error);
             next(error)
+        }
+    };
+    async signrefreshToken(req , res , next){
+        try {
+            const refreshToken= req.body.RefreshToken;
+            const phoneNumber = await verifyRefreshToken(refreshToken);
+            console.log(phoneNumber);
+            const user = await UserModel.findOne({phoneNumber});
+            const accses = await accsesToken(user._id);
+            const newRefresh = await AccsesRefreshToken(user._id);
+            return res.json({
+                data :{
+                    accsesToken : accses,
+                    refreshToken : newRefresh
+                }
+            })
+            
+        } catch (error) {
+            console.log(error);
+            next(errors.Unauthorized("token has peroblm"))
         }
     }
     

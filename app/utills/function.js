@@ -53,7 +53,6 @@ function AccsesRefreshToken(userId){
             async(err , token)=>{
                 console.log(err);
                 if(err) reject(errors.InternalServerError("خطای سرور"));
-                console.log(userId.toString() , token);
                 const expire = 31536000;
                 await redisClient.SETEX(userId.toString(),expire,token);
                 return resolve(token);
@@ -67,9 +66,9 @@ function verifyRefreshToken(token){
             if(err) reject(errors.Unauthorized(err.message)); 
             const {phoneNumber} = payload || {};
             const user = await UserModel.findOne({phoneNumber} , {password : 0 , OTP : 0})
+            console.log(user);
             if(!user) reject(errors.Unauthorized("حساب کاربری یافت نشد"));
-            console.log(user._id);
-            const RefreshToken = await redisClient.get(user._id.toString());
+            const RefreshToken = await redisClient.get(user._id.toString())
             if(token === RefreshToken) resolve(phoneNumber);
             reject(errors.Unauthorized("مجددا وارد حساب کاربری خود شوید"))
         });

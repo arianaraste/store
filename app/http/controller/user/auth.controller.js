@@ -58,8 +58,8 @@ class UserAuthController {
     async signrefreshToken(req , res , next){
         try {
             const refreshToken= req.body.RefreshToken;
+            console.log(refreshToken);
             const phoneNumber = await verifyRefreshToken(refreshToken);
-            console.log(phoneNumber);
             const user = await UserModel.findOne({phoneNumber});
             const accses = await accsesToken(user._id);
             const newRefresh = await AccsesRefreshToken(user._id);

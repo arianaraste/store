@@ -60,7 +60,6 @@ module.exports =  class Application {
     })
     };
     createRoutes(){
-        console.log("here is serverRoutesmethodConfg");
         this.#app.use("/",AllRoutes)
     };
     connectToMongoDB(){

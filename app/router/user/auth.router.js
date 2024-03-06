@@ -8,7 +8,7 @@ const { UserAuthController } = require("../../http/controller/user/auth.controll
  * @swagger
  * 
  *  paths: 
- *      /user/login:
+ *      /user/authentication/login:
  *          post:
  *              summary: user login in userpanel 
  *              description: user login by one time password (OTP)
@@ -40,7 +40,7 @@ router.post("/login" , UserAuthController.login);
  * @swagger
  * 
  *  paths:
- *      /Authentication/confirmLogin:
+ *      /user/authentication/confirm-login:
  *          post:
  *              summary: check otp and send token for accses
  *              description: user have to confirm authentication and then we send a accses token
@@ -67,13 +67,13 @@ router.post("/login" , UserAuthController.login);
  *                      description: Internal Server Error
  */
 
-router.post("/confirmLogin" , UserAuthController.confirmLogin);
+router.post("/confirm-login" , UserAuthController.confirmLogin);
 
 /**
  * @swagger
  * 
  *  paths:
- *      /Authentication/signRefreshToken:
+ *      /user/authentication/sign-refresh-token:
  *          post:
  *              summary: sign Refresh Token
  *              description : sign refresh token and send acccses token with new Refresh token
@@ -90,7 +90,7 @@ router.post("/confirmLogin" , UserAuthController.confirmLogin);
  * 
  */
 
-router.post("/signRefreshToken", UserAuthController.signrefreshToken)
+router.post("/sign-refresh-token", UserAuthController.signrefreshToken)
 
 module.exports = {
     AuthRouter : router

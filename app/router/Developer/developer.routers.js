@@ -9,14 +9,14 @@ const { RandomNumberGenerator } = require("../../utills/function");
  * 
  * @swagger
  *  paths:
- *      /DeveloperRoutes/hashStringMaker/{hashData}:
- *          get:
+ *      /developer-router/hash-string-maker/{hashData}:
+ *          post:
  *              summary : hashData Tools
  *              description : input your data to become hashString
  *              tags : [DeveloperTools]
  *              parameters: 
  *              -   in: path
- *                  name: data
+ *                  name: hashData
  *                  description: input your data
  *                  required : true
  *                  type: string
@@ -29,13 +29,15 @@ const { RandomNumberGenerator } = require("../../utills/function");
  */
 const router = require("express").Router();
 
-router.get("/hashStringMaker/:hashData",async(req , res ,next)=>{
+router.post("/hash-string-maker/:hashData",async(req , res ,next)=>{
 
     try {
-    const data = req.params.hashData;
-    const salt = bcrypt.genSaltSync(data)
-    const newHashData = bcrypt.hashSync(data , salt);
-    return res.statusCode(200).send(newHashData);
+    const {hashData} = req.params;
+    console.log(hashData);
+    const salt = bcrypt.genSaltSync(10);
+    const newHashData = bcrypt.hashSync(hashData , salt);
+    console.log(newHashData);
+    res.status(200).send(newHashData);
     } catch (error) {
         console.log(error);
         next(error)
@@ -45,7 +47,7 @@ router.get("/hashStringMaker/:hashData",async(req , res ,next)=>{
 * 
 * @swagger
 *  paths:
-*      /DeveloperRoutes/RandomNumber:
+*      /developer-router/random-number:
 *          get:
 *              summary : RandomNumber Tools
 *              description : get RandomNumber
@@ -59,13 +61,17 @@ router.get("/hashStringMaker/:hashData",async(req , res ,next)=>{
 */
 
 
-router.get("/RandomNumber" , async(req , res ,next)=>{
+router.get("/random-number" , async(req , res ,next)=>{
+    
     try {
-        return res.status(200).send(RandomNumberGenerator().toString);
+        res.status(200).json({
+            status : 200,
+            randomNumber : RandomNumberGenerator()
+        })
     } catch (error) {
         next(error)
     }
-    
+
 });
 
 

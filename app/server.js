@@ -21,6 +21,7 @@ module.exports =  class Application {
         this.createServer();
         this.createRoutes();
         this.errorHandler();
+        this.redisInit();
     };
     configApplication(){
         this.#app.use(cors());
@@ -59,7 +60,8 @@ module.exports =  class Application {
     })
     };
     createRoutes(){
-        this.#app.use(AllRoutes)
+        console.log("here is serverRoutesmethodConfg");
+        this.#app.use("/",AllRoutes)
     };
     connectToMongoDB(){
         mongoose.connect(this.#DB_URI).then(console.log("connect to DB")).catch((error)=>{console.log(error)});
@@ -74,6 +76,9 @@ module.exports =  class Application {
         })
 
     };
+    redisInit(){
+        require("./utills/redis_init").default
+    }
     errorHandler(){
         this.#app.use((req , res , next)=>{
             next(errors.NotFound("صفحه مورد نظر یافت نشد"));

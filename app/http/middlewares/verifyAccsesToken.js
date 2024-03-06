@@ -4,8 +4,8 @@ const { SECRET_KEY } = require("../../utills/constans");
 const { UserModel } = require("../../models/users");
 function verifyaccsesToken(req , res ,next){
     try {
-        const [Bearer , token] = req.headers?.accsestoken.split(" ");  
-        console.log(token);
+        const [Bearer , token] = req.headers.accsestoken
+        
         if(!token) throw errors.Unauthorized("وارد حساب کاربری خود شوید");
         JWT.verify(token,SECRET_KEY ,async (err , payload)=>{
             if(err) throw errors.Unauthorized(err.message);

@@ -2,7 +2,7 @@ const { UserAuthController } = require("../../http/controller/user/auth.controll
 
 /**
  * tags:
- *      name: user-auth
+ *      name: userAuthentication
  *      description: user login authentication apis
  * 
  * @swagger
@@ -12,7 +12,7 @@ const { UserAuthController } = require("../../http/controller/user/auth.controll
  *          post:
  *              summary: user login in userpanel 
  *              description: user login by one time password (OTP)
- *              tags: [user-auth]
+ *              tags: [userAuthentication]
  *              parameters:
  *              -   name: phoneNumber
  *                  description: get phone number for login
@@ -36,18 +36,15 @@ const router = require("express").Router();
 router.post("/login" , UserAuthController.login);
 
 /**
- * tags:
- *      name: Confirm
- *      description: confirm otp
  * 
  * @swagger
  * 
  *  paths:
- *      /user/confirmLogin:
+ *      /Authentication/confirmLogin:
  *          post:
  *              summary: check otp and send token for accses
  *              description: user have to confirm authentication and then we send a accses token
- *              tags: [user-auth]
+ *              tags: [userAuthentication]
  *              parameters:
  *              -   name: phoneNumber
  *                  description: input your phoneNumber
@@ -76,11 +73,11 @@ router.post("/confirmLogin" , UserAuthController.confirmLogin);
  * @swagger
  * 
  *  paths:
- *      /user/signRefreshToken:
+ *      /Authentication/signRefreshToken:
  *          post:
  *              summary: sign Refresh Token
  *              description : sign refresh token and send acccses token with new Refresh token
- *              tags: [user-auth]
+ *              tags: [userAuthentication]
  *              parameters: 
  *              -   name: RefreshToken
  *                  description: input your RefreshToken
@@ -93,8 +90,8 @@ router.post("/confirmLogin" , UserAuthController.confirmLogin);
  * 
  */
 
-router.post("/signRefreshToken" ,UserAuthController.signrefreshToken)
+router.post("/signRefreshToken", UserAuthController.signrefreshToken)
 
 module.exports = {
     AuthRouter : router
-}
+};

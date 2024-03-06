@@ -2,13 +2,14 @@ const { date } = require("joi");
 const JWT = require("jsonwebtoken");
 const { UserModel } = require("../models/users");
 const errors = require("http-errors");
-const {SECRET_KEY, REFRESH_SECRET_KEY} = require("./constans")
+const {SECRET_KEY, REFRESH_SECRET_KEY} = require("./constans");
+const redisClient = require("./redis_init")
 function randomNumber(){
    return Math.floor((Math.random() * 90000)+ 10000)
 };
 function OTPMaker(){
     const Code = randomNumber()
-    const expireTime = Date.now() + 120000;
+    const expireTime =( new Date().getTime() + 120000);
     let OTPPack = {
         Code,
         expireTime
@@ -49,10 +50,13 @@ function AccsesRefreshToken(userId){
             {
                 expiresIn: "1y"
             },
-            (err , token)=>{
+            async(err , token)=>{
                 console.log(err);
                 if(err) reject(errors.InternalServerError("خطای سرور"));
-                resolve(token)
+                console.log(userId.toString() , token);
+                const expire = 31536000;
+                await redisClient.SETEX(userId.toString(),expire,token);
+                return resolve(token);
             }
         )
     })
@@ -64,7 +68,10 @@ function verifyRefreshToken(token){
             const {phoneNumber} = payload || {};
             const user = await UserModel.findOne({phoneNumber} , {password : 0 , OTP : 0})
             if(!user) reject(errors.Unauthorized("حساب کاربری یافت نشد"));
-            resolve(phoneNumber);
+            console.log(user._id);
+            const RefreshToken = await redisClient.get(user._id.toString());
+            if(token === RefreshToken) resolve(phoneNumber);
+            reject(errors.Unauthorized("مجددا وارد حساب کاربری خود شوید"))
         });
     })
 };

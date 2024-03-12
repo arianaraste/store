@@ -1,4 +1,4 @@
-const { date } = require("joi");
+const { date, func } = require("joi");
 const JWT = require("jsonwebtoken");
 const { UserModel } = require("../models/users");
 const errors = require("http-errors");
@@ -75,10 +75,11 @@ function verifyRefreshToken(token){
     })
 };
 
+
 module.exports = {
     RandomNumberGenerator : randomNumber,
     OTPGenerator : OTPMaker,
     accsesToken,
     AccsesRefreshToken,
-    verifyRefreshToken
+    verifyRefreshToken,
 }

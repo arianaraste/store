@@ -1,12 +1,7 @@
-const categoryController = require("../../http/controller/admin/category.controller");
 const { CategoryController } = require("../../http/controller/admin/category.controller");
-
+const router = require("express").Router();
 
 /**
- * 
- *  tags:
- *      name:Category
- *      description:
  * 
  * @swagger
  * 
@@ -43,7 +38,7 @@ const { CategoryController } = require("../../http/controller/admin/category.con
  * 
  * 
  */
-const router = require("express").Router();
+
 
 router.post("/create-category" , CategoryController.createCategory)
 /**
@@ -151,7 +146,7 @@ router.delete("/delete-category/:ID" , CategoryController.removeCategory)
  * @swagger
  * 
  *  paths:
- *      /admin/category/list-of-categories:
+ *      /admin/category/list-of-categories-with-populate:
  *          get:
  *              summary: get all categories
  *              description : get all category
@@ -165,7 +160,28 @@ router.delete("/delete-category/:ID" , CategoryController.removeCategory)
  * 
  */
 
-router.get("/list-of-categories" , CategoryController.getAllCategory);
+router.get("/list-of-categories-with-populate"  , CategoryController.getAllCateorywhitpopulate);
+/**
+ * 
+ * 
+ * @swagger
+ * 
+ *  paths:
+ *      /admin/category/list-of-categories-with-out-populate:
+ *          get:
+ *              summary: get all categories
+ *              description : get all category
+ *              tags: [Category]
+ *              responses: 
+ *                  200:
+ *                      description: succes
+ *                  400:
+ *                      description: notFound
+ *              
+ * 
+ */
+
+router.get("/list-of-categories-with-out-populate" , CategoryController.getAllCategoryWhitOutputPopulate);
 /**
  * 
  * 
@@ -214,17 +230,11 @@ router.get("/get-all-parents-of-category", CategoryController.getAllParentsCateg
  * @swagger
  * 
  *  paths:
- *      /admin/category/get-all-childern-of-category/{parentID}:
+ *      /admin/category/get-all-childern-of-category:
  *          get:
  *              summary: get all childern categories
  *              description : get all childern category
  *              tags: [Category]
- *              parameters: 
- *              -   name: parentID
- *                  in: path
- *                  description: input parentID
- *                  required: true
- *                  type:   string
  *              responses: 
  *                  200:
  *                      description: succes
@@ -234,7 +244,7 @@ router.get("/get-all-parents-of-category", CategoryController.getAllParentsCateg
  * 
  */
 
-router.get("/get-all-childern-of-category/:parentID", CategoryController.getAllChildeCategory)
+router.get("/get-all-childern-of-category", CategoryController.getAllChildeCategory)
 module.exports = {
     categoryRoutes : router
 }

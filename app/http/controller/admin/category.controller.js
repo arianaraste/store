@@ -36,28 +36,26 @@ class CategoryController {
             next(errors.BadRequest(error.message))
         }
     };
-    async getAllCategory(req , res , next){
+    async getAllCateorywhitpopulate(req , res , next){
         try {
-            const category = await CategoriesModel.aggregate([
-                {
-                    $lookup:{
-                        from : "categories",
-                        localField : "_id",
-                        foreignField : "parent",
-                        as : "childern"
-                        
-                    }
-                },{
-                    
-        
-                    $project:{
-                        __v : 0,
-                        "childern.parent" : 0,
-                        "childern.__V" : 0
-                    }
-                    
+            const categories = await CategoriesModel.find({});
+            return res.status(200).json({
+                statusCode: 200,
+                data : {
+                    categories
                 }
-            ]);
+            })
+        
+        } catch (error) {
+            next(error)
+        }
+        
+    }
+    async getAllCategoryWhitOutputPopulate(req , res , next){
+        try {
+            const category = await CategoriesModel.aggregate([{
+                $match : {}
+            }]);
             return res.status(200).json({
                     status : 200, 
                     categories : category
@@ -79,23 +77,18 @@ class CategoryController {
     };
     async getAllParentsCategory(req , res , next){
         try {
-            const parents = [];
-        const categories = await CategoriesModel.find({})
-        categories.forEach((key , value)=>{
-            if(key === "paraent" && value) categories.push(parents)
-        })
-        return res.status(200).json({
-            status : 200 ,
-            data : parents
-        })
+            const parentsategories = await CategoriesModel.find({parent : undefined}, {__v : 0});
+            return res.status(200).json({
+                status : 200,
+                category : parentsategories
+            })
         } catch (error) {
             next(errors.BadRequest(error.message))
         }
     };
     async getAllChildeCategory(req , res ,next){
         try {
-            const {parentID} = req.param;
-            const childerns = await CategoriesModel.find({parent : parentID} , {__v : 0});
+            const childerns = await CategoriesModel.find({"parent" : {$exists : true}} , {__v : 0});
             if(!childerns) throw errors.NotFound("دسته بندی فرزندی وجود ندارد");
             return res.status(200).json({
                 status: 200 ,
@@ -109,12 +102,11 @@ class CategoryController {
     async updateCategory(req , res , next){
         try {
         const {ID} =  req.params ;
+        const category = await CategoriesModel.findById(ID);
+        if(!category) throw errors.NotFound("دسته بندی یافت نشد")
         await mongooseID_Validator.validateAsync({ID})
         console.log(ID);
         const {title , description,parent,img } = req.body;
-
-        const category = await CategoriesModel.findById(ID);
-        if(!category) throw errors.NotFound("دسته بندی یافت نشد")
         const updateCategory = await CategoriesModel.updateOne({_id : ID} , {$set : {
             title : title ,
             description : description,
@@ -139,7 +131,10 @@ class CategoryController {
         await mongooseID_Validator.validateAsync({ID})
         const category = await CategoriesModel.findById(ID);
         if(!category) throw errors.NotFound("دسته بندی یافت نشد")
-        const deleteCategory = await CategoriesModel.deleteOne({_id : category._id});
+        const deleteCategory = await CategoriesModel.deleteMany({$or : [
+            {_id : category._id},
+            {parent : category._id}
+        ]});
         if(deleteCategory.deletedCount === 0) throw errors.InternalServerError("دسته بندی حذف نشد");
         return res.status(200).json({
             status : 200 ,
@@ -150,6 +145,7 @@ class CategoryController {
         }
 
     };
+    
     addImageCategory(){};
 };
 

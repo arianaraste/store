@@ -4,7 +4,8 @@ const errors = require("http-errors");
 const { mongooseID_Validator } = require("../../validators/mongooseID.validator");
 const categories = require("../../../models/categories");
 const { object } = require("joi");
-class CategoryController {
+const Controller = require("../controllers");
+class CategoryController extends Controller{
 
     async createCategory(req , res , next){
   

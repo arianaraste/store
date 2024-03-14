@@ -3,7 +3,8 @@ const { confirmLoginSchema, loginSchema } = require("../../validators/user/user.
 const { RandomNumberGenrator, OTPGenerator, accsesToken, AccsesRefreshToken, verifyRefreshToken} = require("../../../utills/function");
 const { UsersSchema, UserModel } = require("../../../models/users");
 const {falseData} = require("../../../utills/constans");
-class UserAuthController {
+const Controller = require("../controllers");
+class UserAuthController extends Controller {
     async login(req , res , next){
         try {
             await loginSchema.validateAsync(req.body);

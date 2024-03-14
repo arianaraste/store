@@ -7,7 +7,7 @@ const Schema = new mongoose.Schema({
 
     title : {type : String , required : true},
     description : {type : String},
-    parent : {type: mongoose.Types.ObjectId , default : undefined},
+    parent : {type: mongoose.Types.ObjectId ,ref : "Categories", default : undefined},
     img : {type : String}
 
 },{

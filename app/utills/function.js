@@ -4,6 +4,8 @@ const { UserModel } = require("../models/users");
 const errors = require("http-errors");
 const {SECRET_KEY, REFRESH_SECRET_KEY} = require("./constans");
 const redisClient = require("./redis_init")
+const path = require("path")
+const fs = require("fs")
 function randomNumber(){
    return Math.floor((Math.random() * 90000)+ 10000)
 };
@@ -74,7 +76,23 @@ function verifyRefreshToken(token){
         });
     })
 };
-
+function createRoute(req){
+    const date = new Date();
+    const year = date.getFullYear().toString();
+    const month = date.getMonth().toString();
+    const day = date.getDate().toString();
+    const url = req.url
+    const directory  = path.join(__dirname, "..", ".." , "public", "uploads", url ,  year , month, day);
+    req.body.fileUploadPath = directory
+    fs.mkdirSync(directory , {recursive : true});    
+    return directory 
+};
+function deleteFileInPublic(fileAddress){
+    console.log(fileAddress);
+    const filePath = path.join(__dirname , ".." , ".." , fileAddress);
+    fs.unlinkSync(fileAddress);
+    return
+}
 
 module.exports = {
     RandomNumberGenerator : randomNumber,
@@ -82,4 +100,6 @@ module.exports = {
     accsesToken,
     AccsesRefreshToken,
     verifyRefreshToken,
+    createRoute,
+    deleteFileInPublic
 }

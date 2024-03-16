@@ -1,16 +1,33 @@
-const blogs = require("../../../models/blogs");
-const { BlogSchema } = require("../../../models/blogs")
+const { BlogSchema, BlogModel } = require("../../../models/blogs")
 const errors = require("http-errors");
 const Controller = require("../controllers");
 const { creatBlogSchema } = require("../../validators/admin/creatblogSchema");
+const { deleteFileInPublic } = require("../../../utills/function");
+const path = require("path")
 class blogsController extends Controller {
 
     async creatBlog(req , res , next){
         try {
-            await creatBlogSchema.validateAsync(req.body);
-            return res.status(200).send(req.body)
+            const blogValidate = await creatBlogSchema.validateAsync(req.body);
+            console.log(blogValidate);
+            req.body.cartimg = path.join(blogValidate.fileUploadPath, blogValidate.filename);
+            const cartimg = req.body.cartimg;
+            const {title, decription, tags, categories, body,gallery} = req.body
+            const blog = await BlogModel.create({
+                title,
+                 decription,
+                  tags,
+                   categories,
+                    body,
+                     cartimg,
+                      gallery
+            });
+            res.status(200).json({
+                status : 200,
+                message : "blog with succesfully uploded"
+            })
         } catch (error) {
-            console.log(error);
+            deleteFileInPublic(req.body.cartimg)
             next(error)
         }
     };

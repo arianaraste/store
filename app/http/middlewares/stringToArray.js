@@ -16,7 +16,6 @@ function stringToArray(field){
 };
 
 module.exports = {
-    
     stringToArray
 
 }

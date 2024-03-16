@@ -6,8 +6,10 @@ const creatBlogSchema = Joi.object({
     body : Joi.string().error(new Error("body isnt string")),
     tags : Joi.array().error(new Error("tags has problem")),
     categories : Joi.string().pattern(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i).error(new Error("objectid has problem")),
-    cartimg : Joi.string().error(new Error("cartimg isnt string")),
-    gallery : Joi.array().length(20).error(new Error("gallery must be 20 index"))
+    cartimg : Joi.string().pattern(/(\.png|\.jpeg|\.jpg|\.webp)$/).error(new Error("cartimg isnt string")),
+    gallery : Joi.array().length(20).error(new Error("gallery must be 20 index")),
+    fileUploadPath : Joi.allow(),
+    filename : Joi.allow()
 }) ;
 
 module.exports = {

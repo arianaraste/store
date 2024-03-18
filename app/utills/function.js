@@ -17,7 +17,7 @@ function OTPMaker(){
         expireTime
     }
     return OTPPack;
-}
+};
 function accsesToken (userId){
     return new Promise(async (resolve , reject)=>{
         const user = await UserModel.findById(userId);
@@ -61,7 +61,7 @@ function AccsesRefreshToken(userId){
             }
         )
     })
-}
+};
 function verifyRefreshToken(token){
     return new Promise((resolve,reject)=>{
         JWT.verify(token,REFRESH_SECRET_KEY ,async(err , payload)=>{
@@ -83,7 +83,7 @@ function createRoute(req){
     const day = date.getDate().toString();
     const url = req.url
     const directory  = path.join(__dirname, "..", ".." , "public", "uploads", url ,  year , month, day);
-    req.body.fileUploadPath = directory
+    req.body.fileUploadPath = directory;
     fs.mkdirSync(directory , {recursive : true});    
     return directory 
 };
@@ -92,7 +92,7 @@ function deleteFileInPublic(fileAddress){
     const filePath = path.join(__dirname , ".." , ".." , fileAddress);
     fs.unlinkSync(fileAddress);
     return
-}
+};
 
 module.exports = {
     RandomNumberGenerator : randomNumber,
@@ -102,4 +102,4 @@ module.exports = {
     verifyRefreshToken,
     createRoute,
     deleteFileInPublic
-}
+};

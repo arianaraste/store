@@ -19,8 +19,9 @@ function fileFilter(req , file , cb){
     const ext = path.extname(file.originalname);
     if(![".jpg",".jpeg",".webp",".png"].includes(ext)) return cb(errors.BadRequest("file dose not correct"));
     return cb(null , true)
-}
-const uploadFile = multer({storage,fileFilter});
+};
+const maxFileSize = 1 * 1000 * 1000;
+const uploadFile = multer({storage,fileFilter, limits : {fileSize : maxFileSize}});
 
 module.exports = {
     uploadFile : uploadFile

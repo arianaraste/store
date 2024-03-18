@@ -13,7 +13,9 @@ class blogsController extends Controller {
             req.body.cartimg = path.join(blogValidate.fileUploadPath, blogValidate.filename);
             const cartimg = req.body.cartimg;
             const {title, decription, tags, categories, body,gallery} = req.body
+            const author = req.user._id
             const blog = await BlogModel.create({
+                author,
                 title,
                  decription,
                   tags,
@@ -33,7 +35,44 @@ class blogsController extends Controller {
     };
     async getAllBlog(req , res , next){
         try {
-             const Blogs = await BlogSchema.find({});
+             const Blogs = await BlogModel.aggregate([
+                {
+                    $match : {}
+                },
+                {
+                    $lookup : {
+                        from : "users",
+                        foreignField: "_id",
+                        localField: "author",
+                        as : "author"
+                    }
+                },
+                {
+                    $unwind : "$author"
+                },
+                {
+                    $lookup : {
+                        from : "categories",
+                        foreignField: "_id",
+                        localField: "categories",
+                        as : "categories"
+                    }
+                },
+                {
+                    $unwind : "$categories"
+                },
+                {
+                    $project : {
+                        "author.__v" : 0,
+                        "categories.__v" : 0,
+                        "author.OTP" : 0,
+                        "author.discount_code" : 0,
+                        "author.bills" : 0,
+
+                    }
+                }
+                
+             ])
              return res.status(200).json({
                 status : 200 ,
                 data : Blogs

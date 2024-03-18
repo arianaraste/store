@@ -1,7 +1,9 @@
 const {blogsController} = require("../../http/controller/admin/blogs.controller");
 const { uploadFile } = require("../../utills/multer");
-const {stringToArray} = require("../../http/middlewares/stringToArray")
+const {stringToArray} = require("../../http/middlewares/stringToArray");
+const { verifyaccsesToken } = require("../../http/middlewares/verifyAccsesToken");
 const router = require("express").Router();
+
 /**
  * 
  * @swagger
@@ -12,6 +14,12 @@ const router = require("express").Router();
  *              tags: [blogs]
  *              summary: blogs
  *              description: get all blogs
+ *              parameters: 
+ *                  -   in: header
+ *                      name: accsestoken
+ *                      type: string 
+ *                      example: Bearer token
+ *                      value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6IjA5MTUyMDU2NTc3IiwidXNlcklkIjoiNjVkZjI1YmI5MzkyNzEwMmU4MjJkOWI5IiwiaWF0IjoxNzEwNzY5MjY2LCJleHAiOjE3MTA3NzI4NjZ9.imneYobMVX_iru13gpd1l71oAT5AVXyxl42INLrlYd0
  *              responses:
  *                  200:   
  *                      description: succses
@@ -31,6 +39,11 @@ router.get("/get-all-blogs", blogsController.getAllBlog)
  *              consumer: 
  *                  -   multipart/form-data
  *              parameters: 
+ *                  -   in: header
+ *                      name: accsestoken
+ *                      type: string 
+ *                      example: Bearer token
+ *                      value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6IjA5MTUyMDU2NTc3IiwidXNlcklkIjoiNjVkZjI1YmI5MzkyNzEwMmU4MjJkOWI5IiwiaWF0IjoxNzEwNzY5MjY2LCJleHAiOjE3MTA3NzI4NjZ9.imneYobMVX_iru13gpd1l71oAT5AVXyxl42INLrlYd0
  *                  -   in: formData
  *                      name: title
  *                      type: string
@@ -40,7 +53,7 @@ router.get("/get-all-blogs", blogsController.getAllBlog)
  *                      type: string
  *                  -   in: formData
  *                      name: tags
- *                      example: #tag1#tag2#tag3
+ *                      example: #tag
  *                      type: string
  *                  -   in: formData
  *                      name: categories
@@ -59,7 +72,7 @@ router.get("/get-all-blogs", blogsController.getAllBlog)
  *                      description: succses
  */
 
-router.post("/create-blog",uploadFile.single("cartimg"),stringToArray("tags"), blogsController.creatBlog)
+router.post("/create-blog",verifyaccsesToken ,uploadFile.single("cartimg"),stringToArray("tags"), blogsController.creatBlog)
 module.exports = {
     blogRoutes : router
 };

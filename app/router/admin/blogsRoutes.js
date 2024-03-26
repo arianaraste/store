@@ -72,7 +72,69 @@ router.get("/get-all-blogs", blogsController.getAllBlog)
  *                      description: succses
  */
 
-router.post("/create-blog",verifyaccsesToken ,uploadFile.single("cartimg"),stringToArray("tags"), blogsController.creatBlog)
+router.post("/create-blog",verifyaccsesToken ,uploadFile.single("cartimg"),stringToArray("tags"), blogsController.creatBlog);
+
+/**
+ * 
+ * @swagger
+ *  paths:
+ *      /admin/blog//find-by-id/{ID}:
+ *          post:
+ *              summary: find blog dy id
+ *              description: find spcial blog with id
+ *              tags: [blogs]
+ *              parameters:
+ *                  -   in: path
+ *                      name: ID
+ *                      description: input ypur blog id
+ *                      type: string
+ *                      required: true
+ *                  -   in: header
+ *                      name: accsestoken
+ *                      type: string
+ *                      reqired: true
+ *                      value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6IjA5MTUyMDU2NTc3IiwidXNlcklkIjoiNjVkZjI1YmI5MzkyNzEwMmU4MjJkOWI5IiwiaWF0IjoxNzExNDg3Nzc1LCJleHAiOjE3MTE0OTEzNzV9.NSwRum8ZUdFK5Cs3X-Q8aw5oCvnkQcDoCVlbE380C8o
+ *              responses:
+ *                  200:
+ *                      description: succes
+ *                  400:
+ *                      description: not found
+ * 
+ * 
+ */
+
+router.post("/find-by-id/:ID" , verifyaccsesToken , blogsController.getByIdBlog);
+
+/**
+ * 
+ * @swagger
+ *  paths:
+ *      /admin/blog//delete-by-id/{ID}:
+ *          delete:
+ *              summary: delete blog by id
+ *              description: find spcial blog with id
+ *              tags: [blogs]
+ *              parameters:
+ *                  -   in: path
+ *                      name: ID
+ *                      description: input ypur blog id
+ *                      type: string
+ *                      required: true
+ *                  -   in: header
+ *                      name: accsestoken
+ *                      type: string
+ *                      reqired: true
+ *                      value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6IjA5MTUyMDU2NTc3IiwidXNlcklkIjoiNjVkZjI1YmI5MzkyNzEwMmU4MjJkOWI5IiwiaWF0IjoxNzExNDg3Nzc1LCJleHAiOjE3MTE0OTEzNzV9.NSwRum8ZUdFK5Cs3X-Q8aw5oCvnkQcDoCVlbE380C8o
+ *              responses:
+ *                  200:
+ *                      description: succes
+ *                  400:
+ *                      description: not found
+ * 
+ * 
+ */
+
+router.delete("/delete-by-id/:ID" , verifyaccsesToken , blogsController.deleteBlog)
 module.exports = {
     blogRoutes : router
 };

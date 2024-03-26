@@ -3,7 +3,8 @@ const errors = require("http-errors");
 const Controller = require("../controllers");
 const { creatBlogSchema } = require("../../validators/admin/creatblogSchema");
 const { deleteFileInPublic } = require("../../../utills/function");
-const path = require("path")
+const path = require("path");
+const { mongooseID_Validator } = require("../../validators/mongooseID.validator");
 class blogsController extends Controller {
 
     async creatBlog(req , res , next){
@@ -68,6 +69,7 @@ class blogsController extends Controller {
                         "author.OTP" : 0,
                         "author.discount_code" : 0,
                         "author.bills" : 0,
+                        "__v" : 0
 
                     }
                 }
@@ -81,8 +83,20 @@ class blogsController extends Controller {
             next(error)
         }
     };
-    getByIdBlog(req , res , next){
+    async getByIdBlog(req , res , next){
         try {
+            const {ID} = req.params;
+            console.log(ID);
+            await mongooseID_Validator.validateAsync({ID})
+            const Blog = await BlogModel.findOne({_id : ID}).populate([{path : "author" , select : {first_name  : 1 , last_name: 1 , profileImg : 1, Role : 1 } } , {path: "categories"}]);
+            if(!Blog) throw errors.NotFound("didnt find any blogs");
+            return res.status(200).json({   
+                status : 400 ,
+                data : {
+                    Blog
+                }
+            })
+            
                 
         } catch (error) {
             next(error)
@@ -95,9 +109,20 @@ class blogsController extends Controller {
             next(error)
         }
     };
-    deleteBlog(req , res , next){
+    async deleteBlog(req , res , next){
         try {
-                
+            
+            const {ID} = req.params;
+            await mongooseID_Validator.validateAsync({ID})
+            const blog = await BlogModel.findById(ID);
+            if(!blog) throw errors.NotFound("didnt find the blog");
+            const deleteBlog = await BlogModel.deleteOne({_id : ID});
+            if(deleteBlog.deletedCount === 0 ) throw errors.BadRequest("didnt delete blog");
+            return res.status(200).json({
+                status : 200 ,
+                message : "blog deleted"
+            })
+
         } catch (error) {
             next(error)
         }

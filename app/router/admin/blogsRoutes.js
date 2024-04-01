@@ -78,7 +78,7 @@ router.post("/create-blog",verifyaccsesToken ,uploadFile.single("cartimg"),strin
  * 
  * @swagger
  *  paths:
- *      /admin/blog//find-by-id/{ID}:
+ *      /admin/blog/find-by-id/{ID}:
  *          post:
  *              summary: find blog dy id
  *              description: find spcial blog with id
@@ -109,7 +109,7 @@ router.post("/find-by-id/:ID" , verifyaccsesToken , blogsController.getByIdBlog)
  * 
  * @swagger
  *  paths:
- *      /admin/blog//delete-by-id/{ID}:
+ *      /admin/blog/delete-by-id/{ID}:
  *          delete:
  *              summary: delete blog by id
  *              description: find spcial blog with id
@@ -134,7 +134,60 @@ router.post("/find-by-id/:ID" , verifyaccsesToken , blogsController.getByIdBlog)
  * 
  */
 
-router.delete("/delete-by-id/:ID" , verifyaccsesToken , blogsController.deleteBlog)
+router.delete("/delete-by-id/:ID" , verifyaccsesToken , blogsController.deleteBlog);
+
+/**
+ * 
+ * @swagger
+ * 
+ *  paths:
+ *      /admin/blog/update/{ID}:
+ *          patch:
+ *              tags: [blogs]
+ *              summary: update blogs
+ *              description: update blog by id 
+ *              consumer: 
+ *                  -   multipart/form-data
+ *              parameters: 
+ *                  -   in: path
+ *                      name: ID
+ *                      type: string
+ *                      required: true
+ *                  -   in: header
+ *                      name: accsestoken
+ *                      type: string 
+ *                      example: Bearer token
+ *                      required : true
+ *                      value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6IjA5MTUyMDU2NTc3IiwidXNlcklkIjoiNjVkZjI1YmI5MzkyNzEwMmU4MjJkOWI5IiwiaWF0IjoxNzEwNzY5MjY2LCJleHAiOjE3MTA3NzI4NjZ9.imneYobMVX_iru13gpd1l71oAT5AVXyxl42INLrlYd0
+ *                  -   in: formData
+ *                      name: title
+ *                      type: string
+ *                  -   in: formData
+ *                      name: decription
+ *                      type: string
+ *                  -   in: formData
+ *                      name: tags
+ *                      example: #tag
+ *                      type: string
+ *                  -   in: formData
+ *                      name: categories
+ *                      type: string
+ *                  -   in: formData
+ *                      name: body
+ *                      type: string
+ *                  -   in: formData
+ *                      name: cartimg
+ *                      type: file
+ *                  -   in: formData
+ *                      name: gallery
+ *                      type: file
+ *              responses:
+ *                  202:
+ *                      description: accepted
+ */
+
+router.patch("/update/:ID",verifyaccsesToken ,uploadFile.single("cartimg"),stringToArray("tags"), blogsController.updateBlog);
+
 module.exports = {
     blogRoutes : router
 };

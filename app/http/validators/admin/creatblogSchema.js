@@ -1,7 +1,7 @@
 const Joi = require("joi");
 
 const creatBlogSchema = Joi.object({
-    title : Joi.string().required().min(1).max(60).error(new Error("title is not correct")),
+    title : Joi.string().min(1).max(60).error(new Error("title is not correct")),
     decription : Joi.string().error(new Error("description isnt string")),
     body : Joi.string().error(new Error("body isnt string")),
     tags : Joi.array().error(new Error("tags has problem")),

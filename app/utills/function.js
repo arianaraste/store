@@ -70,7 +70,8 @@ function verifyRefreshToken(token){
             const user = await UserModel.findOne({phoneNumber} , {password : 0 , OTP : 0})
             console.log(user);
             if(!user) reject(errors.Unauthorized("حساب کاربری یافت نشد"));
-            const RefreshToken = await redisClient.get(user._id.toString())
+            const RefreshToken = await redisClient.get(user._id.toString());
+            if(!RefreshToken) reject(errors.Unauthorized("مجددا وارد حساب کاربری خود شوید"));
             if(token === RefreshToken) resolve(phoneNumber);
             reject(errors.Unauthorized("مجددا وارد حساب کاربری خود شوید"))
         });
@@ -88,11 +89,30 @@ function createRoute(req){
     return directory 
 };
 function deleteFileInPublic(fileAddress){
-    console.log(fileAddress);
+    if(fileAddress){
     const filePath = path.join(__dirname , ".." , ".." , fileAddress);
-    fs.unlinkSync(fileAddress);
+    if(fs.existsSync(fileAddress))fs.unlinkSync(fileAddress);
+    }
     return
 };
+async function filterUpdateData(updateData , next){
+    try {
+    let blackList = ["bookmark", "deslike", "like","comment", "author"];
+    let badValues = ["", " ", 0, undefined, null, 0, "0",];
+
+    Object.keys(updateData).forEach(key =>{
+        if(updateData[key]== "string") updateData[key].trim();
+        if(blackList.includes(updateData[key])) delete updateData[key];
+        if(badValues.includes(updateData[key])){
+            delete updateData[key];
+            throw errors.BadRequest("not found value");
+        } 
+
+    });  
+    } catch (error) {
+        next(error)
+    }    
+}
 
 module.exports = {
     RandomNumberGenerator : randomNumber,
@@ -101,5 +121,6 @@ module.exports = {
     AccsesRefreshToken,
     verifyRefreshToken,
     createRoute,
-    deleteFileInPublic
+    deleteFileInPublic,
+    filterUpdateData
 };

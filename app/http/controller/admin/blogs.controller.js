@@ -5,12 +5,12 @@ const { creatBlogSchema } = require("../../validators/admin/creatblogSchema");
 const { deleteFileInPublic } = require("../../../utills/function");
 const path = require("path");
 const { mongooseID_Validator } = require("../../validators/mongooseID.validator");
+const {filterUpdateData} = require("../../../utills/function")
 class blogsController extends Controller {
 
     async creatBlog(req , res , next){
         try {
             const blogValidate = await creatBlogSchema.validateAsync(req.body);
-            console.log(blogValidate);
             req.body.cartimg = path.join(blogValidate.fileUploadPath, blogValidate.filename);
             const cartimg = req.body.cartimg;
             const {title, decription, tags, categories, body,gallery} = req.body
@@ -30,7 +30,7 @@ class blogsController extends Controller {
                 message : "blog with succesfully uploded"
             })
         } catch (error) {
-            deleteFileInPublic(req.body.cartimg)
+            deleteFileInPublic(req.body.cartimg);
             next(error)
         }
     };
@@ -102,10 +102,38 @@ class blogsController extends Controller {
             next(error)
         }
     };
-    updateBlog(req , res , next){
+    async updateBlog(req , res , next){
         try {
-                
+            const {ID} = req.params;
+            await mongooseID_Validator.validateAsync({ID});
+            const blog = await BlogModel.findById(ID);
+            if(!blog) throw errors.NotFound("blog NotFound");
+            console.log(req.body.fileUploadPath,req.body.filename);
+            if(req.body.cartimg) req.body.cartimg = path.join(req.body.cartimg.fileUploadPath , req.body.cartimg.filename)
+            const updateData = req.body;
+
+            let blackList = ["bookmark", "deslike", "like","comment", "author"];
+            let badValues = ["", " ", 0, undefined, null, 0, "0",];
+        
+            Object.keys(updateData).forEach(key =>{
+                if(updateData[key]== "string") updateData[key].trim();
+                if(blackList.includes(updateData[key])) delete updateData[key];
+                if(badValues.includes(updateData[key]))delete updateData[key];
+            
+            })
+
+            const updateResult = await BlogModel.updateOne({_id : ID} , {$set : updateData});
+            if(updateResult.modifiedCount == 0) throw errors.InternalServerError("didnt The blog was not updated");
+
+            res.status(202).json({
+                status : 202,
+                message: "update blog accepted"
+            })
+
         } catch (error) {
+            console.log(error);
+
+            deleteFileInPublic(req.body.cartimg)
             next(error)
         }
     };

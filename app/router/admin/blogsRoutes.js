@@ -1,7 +1,6 @@
 const {blogsController} = require("../../http/controller/admin/blogs.controller");
 const { uploadFile } = require("../../utills/multer");
 const {stringToArray} = require("../../http/middlewares/stringToArray");
-const { verifyaccsesToken } = require("../../http/middlewares/verifyAccsesToken");
 const router = require("express").Router();
 
 /**
@@ -72,7 +71,7 @@ router.get("/get-all-blogs", blogsController.getAllBlog)
  *                      description: succses
  */
 
-router.post("/create-blog",verifyaccsesToken ,uploadFile.single("cartimg"),stringToArray("tags"), blogsController.creatBlog);
+router.post("/create-blog",uploadFile.single("cartimg"),stringToArray("tags"), blogsController.creatBlog);
 
 /**
  * 
@@ -103,7 +102,7 @@ router.post("/create-blog",verifyaccsesToken ,uploadFile.single("cartimg"),strin
  * 
  */
 
-router.post("/find-by-id/:ID" , verifyaccsesToken , blogsController.getByIdBlog);
+router.post("/find-by-id/:ID", blogsController.getByIdBlog);
 
 /**
  * 
@@ -134,7 +133,7 @@ router.post("/find-by-id/:ID" , verifyaccsesToken , blogsController.getByIdBlog)
  * 
  */
 
-router.delete("/delete-by-id/:ID" , verifyaccsesToken , blogsController.deleteBlog);
+router.delete("/delete-by-id/:ID" , blogsController.deleteBlog);
 
 /**
  * 
@@ -186,7 +185,7 @@ router.delete("/delete-by-id/:ID" , verifyaccsesToken , blogsController.deleteBl
  *                      description: accepted
  */
 
-router.patch("/update/:ID",verifyaccsesToken ,uploadFile.single("cartimg"),stringToArray("tags"), blogsController.updateBlog);
+router.patch("/update/:ID",uploadFile.single("cartimg"),stringToArray("tags"), blogsController.updateBlog);
 
 module.exports = {
     blogRoutes : router

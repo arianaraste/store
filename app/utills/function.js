@@ -91,28 +91,11 @@ function createRoute(req){
 function deleteFileInPublic(fileAddress){
     if(fileAddress){
     const filePath = path.join(__dirname , ".." , ".." , fileAddress);
-    if(fs.existsSync(fileAddress))fs.unlinkSync(fileAddress);
+    if(fs.existsSync(fileAddress)) fs.unlinkSync(fileAddress);
     }
     return
 };
-async function filterUpdateData(updateData , next){
-    try {
-    let blackList = ["bookmark", "deslike", "like","comment", "author"];
-    let badValues = ["", " ", 0, undefined, null, 0, "0",];
 
-    Object.keys(updateData).forEach(key =>{
-        if(updateData[key]== "string") updateData[key].trim();
-        if(blackList.includes(updateData[key])) delete updateData[key];
-        if(badValues.includes(updateData[key])){
-            delete updateData[key];
-            throw errors.BadRequest("not found value");
-        } 
-
-    });  
-    } catch (error) {
-        next(error)
-    }    
-}
 
 module.exports = {
     RandomNumberGenerator : randomNumber,
@@ -122,5 +105,4 @@ module.exports = {
     verifyRefreshToken,
     createRoute,
     deleteFileInPublic,
-    filterUpdateData
 };

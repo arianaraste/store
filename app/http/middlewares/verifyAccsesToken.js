@@ -14,11 +14,13 @@ function verifyaccsesToken(req , res ,next){
             if(!user) throw errors.Unauthorized("حساب کاربری یافت نشد") ;
             req.user =  user;
             return next()
-        });
+        })
     } catch (error) {
         next(errors.InternalServerError(error.message))
     }
 };
+
+
 module.exports = {
     verifyaccsesToken
 };

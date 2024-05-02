@@ -109,8 +109,9 @@ class blogsController extends Controller {
             const blog = await BlogModel.findById(ID);
             if(!blog) throw errors.NotFound("blog NotFound");
             console.log(req.body.fileUploadPath,req.body.filename);
-            if(req.body.cartimg) req.body.cartimg = path.join(req.body.cartimg.fileUploadPath , req.body.cartimg.filename)
+            if(req.body) req.body.cartimg = path.join(req.body.fileUploadPath , req.body.filename)
             const updateData = req.body;
+            console.log(updateData);
 
             let blackList = ["bookmark", "deslike", "like","comment", "author"];
             let badValues = ["", " ", 0, undefined, null, 0, "0",];

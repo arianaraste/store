@@ -33,7 +33,7 @@ module.exports =  class Application {
             swaggerDefinition : {
                 info : {
                     title : "Store",
-                    version : "1.0.0",
+                    version : "3.0.0",
                     description : "this project is a Store web app",
                     contact : {
                         name : "arian araste" , 
@@ -49,7 +49,9 @@ module.exports =  class Application {
             },
             apis : ["./app/router/**/*.js"]
 
-        })))
+            }),{explorer : true}
+        )
+    )
 
     };
     createServer(){

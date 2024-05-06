@@ -2,7 +2,55 @@ const {blogsController} = require("../../http/controller/admin/blogs.controller"
 const { uploadFile } = require("../../utills/multer");
 const {stringToArray} = require("../../http/middlewares/stringToArray");
 const router = require("express").Router();
-
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Blog:
+ *       type: object
+ *       required:
+ *         - title
+ *       properties:
+ *         title:
+ *           type: string
+ *           description: title for Blog
+ *         description:
+ *           type: string
+ *           description: description of blog
+ *         text:
+ *           type: string
+ *           description: information blog
+ *         tags:
+ *           type: string
+ *           description: input tags
+ *         category:
+ *           type: string
+ *           description: select category
+ *         image:
+ *           type: string
+ *           description: input blog image
+ *     UpdateBlog:
+ *       type: object
+ *       properties:
+ *         title:
+ *           type: string
+ *           description: title for Blog
+ *         description:
+ *           type: string
+ *           description: description of blog
+ *         text:
+ *           type: string
+ *           description: information blog
+ *         tags:
+ *           type: string
+ *           description: input tags
+ *         category:
+ *           type: string
+ *           description: select category
+ *         image:
+ *           type: string
+ *           description: input blog image
+ */
 /**
  * 
  * @swagger
@@ -13,12 +61,6 @@ const router = require("express").Router();
  *              tags: [blogs]
  *              summary: blogs
  *              description: get all blogs
- *              parameters: 
- *                  -   in: header
- *                      name: accsestoken
- *                      type: string 
- *                      example: Bearer token
- *                      value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6IjA5MTUyMDU2NTc3IiwidXNlcklkIjoiNjVkZjI1YmI5MzkyNzEwMmU4MjJkOWI5IiwiaWF0IjoxNzEwNzY5MjY2LCJleHAiOjE3MTA3NzI4NjZ9.imneYobMVX_iru13gpd1l71oAT5AVXyxl42INLrlYd0
  *              responses:
  *                  200:   
  *                      description: succses
@@ -35,37 +77,12 @@ router.get("/get-all-blogs", blogsController.getAllBlog)
  *              tags: [blogs]
  *              summary: create blogs
  *              description: create a new blog (fromData
- *              consumer: 
- *                  -   multipart/form-data
- *              parameters: 
- *                  -   in: header
- *                      name: accsestoken
- *                      type: string 
- *                      example: Bearer token
- *                      value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6IjA5MTUyMDU2NTc3IiwidXNlcklkIjoiNjVkZjI1YmI5MzkyNzEwMmU4MjJkOWI5IiwiaWF0IjoxNzEwNzY5MjY2LCJleHAiOjE3MTA3NzI4NjZ9.imneYobMVX_iru13gpd1l71oAT5AVXyxl42INLrlYd0
- *                  -   in: formData
- *                      name: title
- *                      type: string
- *                      required: true
- *                  -   in: formData
- *                      name: decription
- *                      type: string
- *                  -   in: formData
- *                      name: tags
- *                      example: #tag
- *                      type: string
- *                  -   in: formData
- *                      name: categories
- *                      type: string
- *                  -   in: formData
- *                      name: body
- *                      type: string
- *                  -   in: formData
- *                      name: cartimg
- *                      type: file
- *                  -   in: formData
- *                      name: gallery
- *                      type: file
+ *              requestBody:
+ *                  required: true
+ *                  content: 
+ *                      multipart/form-data:
+ *                          schema:
+ *                              $ref:   '#/components/schemas/Blog'
  *              responses:
  *                  200:
  *                      description: succses
@@ -78,7 +95,7 @@ router.post("/create-blog",uploadFile.single("cartimg"),stringToArray("tags"), b
  * @swagger
  *  paths:
  *      /admin/blog/find-by-id/{ID}:
- *          post:
+ *          get:
  *              summary: find blog dy id
  *              description: find spcial blog with id
  *              tags: [blogs]
@@ -88,11 +105,6 @@ router.post("/create-blog",uploadFile.single("cartimg"),stringToArray("tags"), b
  *                      description: input ypur blog id
  *                      type: string
  *                      required: true
- *                  -   in: header
- *                      name: accsestoken
- *                      type: string
- *                      reqired: true
- *                      value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6IjA5MTUyMDU2NTc3IiwidXNlcklkIjoiNjVkZjI1YmI5MzkyNzEwMmU4MjJkOWI5IiwiaWF0IjoxNzExNDg3Nzc1LCJleHAiOjE3MTE0OTEzNzV9.NSwRum8ZUdFK5Cs3X-Q8aw5oCvnkQcDoCVlbE380C8o
  *              responses:
  *                  200:
  *                      description: succes
@@ -102,7 +114,7 @@ router.post("/create-blog",uploadFile.single("cartimg"),stringToArray("tags"), b
  * 
  */
 
-router.post("/find-by-id/:ID", blogsController.getByIdBlog);
+router.get("/find-by-id/:ID", blogsController.getByIdBlog);
 
 /**
  * 
@@ -119,11 +131,6 @@ router.post("/find-by-id/:ID", blogsController.getByIdBlog);
  *                      description: input ypur blog id
  *                      type: string
  *                      required: true
- *                  -   in: header
- *                      name: accsestoken
- *                      type: string
- *                      reqired: true
- *                      value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6IjA5MTUyMDU2NTc3IiwidXNlcklkIjoiNjVkZjI1YmI5MzkyNzEwMmU4MjJkOWI5IiwiaWF0IjoxNzExNDg3Nzc1LCJleHAiOjE3MTE0OTEzNzV9.NSwRum8ZUdFK5Cs3X-Q8aw5oCvnkQcDoCVlbE380C8o
  *              responses:
  *                  200:
  *                      description: succes
@@ -152,34 +159,12 @@ router.delete("/delete-by-id/:ID" , blogsController.deleteBlog);
  *                      name: ID
  *                      type: string
  *                      required: true
- *                  -   in: header
- *                      name: accsestoken
- *                      type: string 
- *                      example: Bearer token
- *                      required : true
- *                      value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6IjA5MTUyMDU2NTc3IiwidXNlcklkIjoiNjVkZjI1YmI5MzkyNzEwMmU4MjJkOWI5IiwiaWF0IjoxNzEwNzY5MjY2LCJleHAiOjE3MTA3NzI4NjZ9.imneYobMVX_iru13gpd1l71oAT5AVXyxl42INLrlYd0
- *                  -   in: formData
- *                      name: title
- *                      type: string
- *                  -   in: formData
- *                      name: decription
- *                      type: string
- *                  -   in: formData
- *                      name: tags
- *                      example: #tag
- *                      type: string
- *                  -   in: formData
- *                      name: categories
- *                      type: string
- *                  -   in: formData
- *                      name: body
- *                      type: string
- *                  -   in: formData
- *                      name: cartimg
- *                      type: file
- *                  -   in: formData
- *                      name: gallery
- *                      type: file
+ *              requestBody:
+ *                 required: true
+ *                 content:
+ *                       multipart/form-data:
+ *                          schema:
+ *                              $ref:   '#/components/schemas/UpdateBlog'
  *              responses:
  *                  202:
  *                      description: accepted

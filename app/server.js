@@ -31,25 +31,41 @@ module.exports =  class Application {
         this.#app.use(express.static(path.join(__dirname , ".." , "public")));
         this.#app.use("/api-docs" , SwaggerUi.serve , SwaggerUi.setup(swaggerJSDoc({
             swaggerDefinition : {
+                openapi : "3.0.0",
                 info : {
                     title : "Store",
-                    version : "3.0.0",
+                    version : "1.0.0",
                     description : "this project is a Store web app",
                     contact : {
                         name : "arian araste" , 
                         email : "aryan.araste@gmail.com",
                         url : "https://github.com/arianaraste"
-                    }
+                    },
                 },
                 servers : [
                     {
                         url :"http://localhost:5000"
+                    },
+                    {
+                        url :"http://localhost:4000"
                     }
-                ]
-            },
+                ],
+                components : {
+                    securitySchemes : {
+                      BearerAuth : {
+                        type: "http",
+                        scheme: "bearer",
+                        bearerFormat: "JWT",
+                        
+                      }
+                    }
+                  },
+                  security : [{BearerAuth : [] }]
+                },
             apis : ["./app/router/**/*.js"]
 
-            }),{explorer : true}
+            }),
+            {explorer : true}
         )
     )
 

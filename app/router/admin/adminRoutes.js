@@ -4,7 +4,6 @@ const {categoryRoutes} = require("./categoryRoutes");
 const router = require("express").Router();
  /**
  * 
-tion : all routes of Category
  * 
  * @swagger
  * 

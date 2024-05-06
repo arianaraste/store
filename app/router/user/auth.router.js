@@ -1,7 +1,39 @@
 const { UserAuthController } = require("../../http/controller/user/auth.controller");
 /**
- *  
+ * @swagger
+ *  components:
+ *      schemas:
+ *          GetOTP:
+ *              type: object
+ *              required:
+ *                  - phoneNumber
+ *              properties:
+ *                  phoneNumber:
+ *                      type: string
+ *                      description: input phoneNumber
+ *          CheckOTP:
+ *              type: object
+ *              required:
+ *                  - phoneNumber
+ *                  - Code
+ *              properties:
+ *                  phoneNumber:
+ *                      type: string
+ *                      description: input phoneNumber
+ *                  Code:
+ *                      type: string
+ *                      description: input received code
+ *          RefreshToken:
+ *              type:   object
+ *              required:
+ *                  -   RefreshToken
+ *              properties:
+ *                  RefreshToken:
+ *                      type:   string
+ *                      description:    input RefreshToken
+ * 
  */
+
 /**
  * tags:
  *      name: userAuthentication
@@ -15,12 +47,15 @@ const { UserAuthController } = require("../../http/controller/user/auth.controll
  *              summary: user login in userpanel 
  *              description: user login by one time password (OTP)
  *              tags: [userAuthentication]
- *              parameters:
- *              -   name: phoneNumber
- *                  description: get phone number for login
- *                  in: formData
- *                  type: string
- *                  required: true
+ *              requestBody:
+ *                  required:   true
+ *                  content:
+ *                      application/x-www-form-urlencoded:
+ *                          schema:
+ *                              $ref:   '#/components/schemas/GetOTP'
+ *                      application/json:
+ *                          schema:
+ *                              $ref:   '#/components/schemas/GetOTP'
  *              responses: 
  *                  201:
  *                      description: Succses
@@ -47,17 +82,15 @@ router.post("/login" , UserAuthController.login);
  *              summary: check otp and send token for accses
  *              description: user have to confirm authentication and then we send a accses token
  *              tags: [userAuthentication]
- *              parameters:
- *              -   name: phoneNumber
- *                  description: input your phoneNumber
- *                  in: formData
- *                  type: string
- *                  required: true
- *              -   name: Code
- *                  description: input your otp Code
- *                  in: formData
- *                  type: string
- *                  required: true
+ *              requestBody:
+ *                  required:   true
+ *                  content:
+ *                      application/x-www-form-urlencoded:
+ *                          schema:
+ *                              $ref:   '#/components/schemas/CheckOTP'
+ *                      application/json:
+ *                          schema:
+ *                              $ref:   '#/components/schemas/CheckOTP'
  *              responses: 
  *                  201:
  *                      description: Succses
@@ -76,16 +109,19 @@ router.post("/confirm-login" , UserAuthController.confirmLogin);
  * 
  *  paths:
  *      /user/authentication/sign-refresh-token:
- *          post:
+ *         post:
  *              summary: sign Refresh Token
  *              description : sign refresh token and send acccses token with new Refresh token
  *              tags: [userAuthentication]
- *              parameters: 
- *              -   name: RefreshToken
- *                  description: input your RefreshToken
- *                  in: formData
- *                  type: string
- *                  required: true
+ *              requestBody:
+ *                  required:   true
+ *                  content:
+ *                      application/x-www-form-urlencoded:
+ *                          schema:
+ *                              $ref:   '#/components/schemas/RefreshToken'
+ *                      application/json:
+ *                          schema:
+ *                              $ref:   '#/components/schemas/RefreshToken'
  *              responses : 
  *                  200: 
  *                      description : succes

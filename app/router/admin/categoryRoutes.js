@@ -1,6 +1,30 @@
 const { CategoryController } = require("../../http/controller/admin/category.controller");
 const router = require("express").Router();
-
+/**
+ * @swagger
+ *  components:
+ *      schemas:
+ *          Category:
+ *              type:   object
+ *              required:
+ *                  -   title
+ *              properties:
+ *                  title:
+ *                      type:   string
+ *                      description:    title of category
+ *                  parent:
+ *                      type:   string
+ *                      description:    parnet of category
+ *          UpdatCategory:
+ *              type:   object
+ *              properties:
+ *                  title:
+ *                      type:   string
+ *                      description:    title   of  category
+ *                  parent:
+ *                      type:   string
+ *                      description:    update  parents category
+ */
 /**
  * 
  * @swagger
@@ -11,27 +35,15 @@ const router = require("express").Router();
  *              summary: create Category
  *              description : create category
  *              tags: [Category]
- *              parameters: 
- *              -   name: title
- *                  description: input title of category
- *                  in: formData
- *                  type: string
+ *              requestBody:
  *                  required: true
- *              -   name: description
- *                  description: input description of category
- *                  in: formData
- *                  type: string
- *                  required: false
- *              -   name: parent
- *                  description: input parent of category
- *                  in: formData
- *                  type: string
- *                  required: false
- *              -   name: img
- *                  description: input img of category
- *                  in: formData
- *                  type: string
- *                  required: false
+ *                  content:    
+ *                      application/x-www-form-urlencoded:
+ *                          schema:
+ *                              $ref:   '#/components/schemas/Category'
+ *                      application/json:
+ *                          schema:
+ *                              $ref:   '#/components/schemas/Category'
  *              responses : 
  *                  200: 
  *                      description : succes
@@ -84,26 +96,15 @@ router.get("/find-by-id/:ID" , CategoryController.getCategoryByID);
  *                  in: path
  *                  type: string
  *                  required: true
- *              -   name: title
- *                  description: input title of category
- *                  in: formData
- *                  type: string
- *                  required: true
- *              -   name: description
- *                  description: input description of category
- *                  in: formData
- *                  type: string
- *                  required: false
- *              -   name: parent
- *                  description: input parent of category
- *                  in: formData
- *                  type: string
- *                  required: false
- *              -   name: img
- *                  description: input img of category
- *                  in: formData
- *                  type: string
- *                  required: false
+ *              requestBody:
+ *                  required:   ture
+ *                  content:
+ *                      application/x-www-form-urlencoded:
+ *                          schema:
+ *                              $ref:   '#/components/schemas/UpdateCategory'
+ *                      application/json:
+ *                          schema:
+ *                              $ref:   '#/components/schemas/UpdateCategory'
  *              responses : 
  *                  200: 
  *                      description : succes

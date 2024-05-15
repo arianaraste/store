@@ -1,19 +1,18 @@
 const { required, string } = require("joi");
 const { default: mongoose, VirtualType } = require("mongoose");
 const { CommentSchema } = require("./public.schema");
-const Episodes = new  moongose.Schema({
+const Episodes = new mongoose.Schema({
     title : {type: String , required : true},
     description : {type: String},
-    Episodes : {type : Episodes ,  required: true},
-    time : {type: String , default : "00:00:00" ,  required : true},
-
+    time : {type: String , default : "00:00:00" },
+    type : {type: String , default : "free"}
 
 })
-const Chapter = new  moongose.Schema({
+const Chapter = new  mongoose.Schema({
     title : {type: String , required : true},
     description : {type: String},
-    Episodes : {type : [Episodes], default : [] ,  required: true},
-    time : {type: String , default : "00:00:00" ,  required : true},
+    Episodes : {type : [Episodes], default : [] },
+    time : {type: String , default : "00:00:00"},
 })
 const Schema = new mongoose.Schema({
 
@@ -34,7 +33,7 @@ const Schema = new mongoose.Schema({
     deslike : {type : [mongoose.Types.ObjectId] , defult : []},
     Students : {type : [mongoose.Types.ObjectId] , defult : []},
     time : {type: String , default : "00:00:00" ,  required : true},
-    chapter : { type : [Chapter] , default : [] , required : true}
+    chapter : { type : [Chapter] , default : [] , }
 },{
     toJSON : {
         virtuals : true
@@ -42,5 +41,5 @@ const Schema = new mongoose.Schema({
 });
 
 module.exports = {
-    ProductSchema :  mongoose.model("Product",Schema)
+    Coursechema :  mongoose.model("Course",Schema)
 }

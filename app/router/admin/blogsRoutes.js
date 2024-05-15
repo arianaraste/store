@@ -27,7 +27,7 @@ const router = require("express").Router();
  *           type: string
  *           description: select category
  *         image:
- *           type: string
+ *           type: file
  *           description: input blog image
  *     UpdateBlog:
  *       type: object
@@ -48,8 +48,9 @@ const router = require("express").Router();
  *           type: string
  *           description: select category
  *         image:
- *           type: string
+ *           type: file
  *           description: input blog image
+ *                      
  */
 /**
  * 
@@ -88,7 +89,7 @@ router.get("/get-all-blogs", blogsController.getAllBlog)
  *                      description: succses
  */
 
-router.post("/create-blog",uploadFile.single("cartimg"),stringToArray("tags"), blogsController.creatBlog);
+router.post("/create-blog",uploadFile.single("images"),stringToArray("tags"), blogsController.creatBlog);
 
 /**
  * 

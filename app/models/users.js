@@ -1,5 +1,6 @@
 const { object } = require("joi");
 const { default: mongoose } = require("mongoose");
+const { Coursechema } = require("./course");
 
 const Schema = new mongoose.Schema({
     first_name : {type : String},
@@ -12,6 +13,7 @@ const Schema = new mongoose.Schema({
     Role : {type : [String] , default : ["USER"]},
     bills : {type : [] , default : []},
     discount_code : {type : Number , default : 0},
+    courses : {type : mongoose.Types.ObjectId, ref : "Course", default : []},
     OTP : { type : Object , default  : {
         Code : 0 ,
         expireTime  : 0

@@ -1,15 +1,9 @@
 const { date, number } = require("joi");
 const { default: mongoose } = require("mongoose");
 const categories = require("./categories");
+const { CommentSchema } = require("./public.schema");
 // for defult categories : "دسته بندی نشده"
-const commentSchema = new mongoose.Schema({
-    user : {type : mongoose.Types.ObjectId , ref : "user" ,required: true},
-    comment : {type : String,required: true},
-    createdAt : {type : Date, default : 0},
-    ike : {type : [mongoose.Types.ObjectId] ,ref : "users", defult : []},
-    deslike : {type :[mongoose.Types.ObjectId] ,ref : "users", defult : []},
-    replay : {type :[mongoose.Types.ObjectId] ,ref : "users", defult : []},
-})
+
 
 const Schema = new mongoose.Schema({
     author : {type : mongoose.Types.ObjectId, ref : "user" , required : true},
@@ -22,7 +16,7 @@ const Schema = new mongoose.Schema({
     tags : {type : [String] ,defult : []},
     like : {type : [mongoose.Types.ObjectId] ,ref : "users", defult : []},
     deslike : {type :[mongoose.Types.ObjectId] ,ref : "users", defult : []},
-    comment : {type : [commentSchema] ,ref : "users", defult : []},
+    comment : {type : [CommentSchema], defult : []},
     bookmark : {type : [mongoose.Types.ObjectId] ,ref : "users", defult : []} 
 },{
   timestamps : true, 

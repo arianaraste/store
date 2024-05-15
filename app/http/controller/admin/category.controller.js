@@ -2,8 +2,6 @@ const { CategoriesModel } = require("../../../models/categories");
 const { categorySchema } = require("../../validators/admin/categorySchema");
 const errors = require("http-errors");
 const { mongooseID_Validator } = require("../../validators/mongooseID.validator");
-const categories = require("../../../models/categories");
-const { object } = require("joi");
 const Controller = require("../controllers");
 class CategoryController extends Controller{
 
@@ -39,15 +37,18 @@ class CategoryController extends Controller{
     };
     async getAllCateorywhitpopulate(req , res , next){
         try {
-            const categories = await CategoriesModel.find({});
+            const category = await CategoriesModel.find({});
+            console.log(category);
+            if(!category) throw errors.NotFound("دسته بندی ایی وجود ندارد");
             return res.status(200).json({
                 statusCode: 200,
                 data : {
-                    categories
+                    category
                 }
             })
         
         } catch (error) {
+            console.log(error);
             next(error)
         }
         

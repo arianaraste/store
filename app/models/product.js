@@ -1,25 +1,40 @@
-const { default: mongoose } = require("mongoose");
+const { required, string } = require("joi");
+const { default: mongoose, VirtualType } = require("mongoose");
+const { CommentSchema } = require("./public.schema");
 
 const Schema = new mongoose.Schema({
 
     title : {type : String , required : true},
     description : {type : String},
-    gallery : {type : [String]},
-    seller : {type : mongoose.Types.ObjectId},
+    text : {type : String},
+    images : {type : [String] , defult: []},
+    tags : {type : [String]},
+    category : {type : mongoose.Types.ObjectId , ref : "category", required: true},
+    supplier : {type : mongoose.Types.ObjectId , ref : "user" , required : true},
     price : {type : Number , default : 0  , required: true},
     discount : {type : Number , default : 0},
-    amount : {type : Number , defult : 0 },
-    Property : {type : [Object] , default : { 
-        icon : "" ,
-        title : "",
-        description: "",
+    count : {type : Number },
+    type : {type: String , required: true},
+    format : {type: String},
+    features : {type: Object, default : {
+        length : "",
+        height : "",
+        width : "",
+        weight : "",
+        colors : [],
+        madein : ""
     }},
+    comment : {type : [CommentSchema] , defult : []},
     bookmark : {type : [mongoose.Types.ObjectId] , defult : []},
     like : {type : [mongoose.Types.ObjectId] , defult : []},
     deslike : {type : [mongoose.Types.ObjectId] , defult : []},
     customers : {type : [mongoose.Types.ObjectId] , defult : []}
+},{
+    toJSON : {
+        virtuals : true
+    }
 });
 
 module.exports = {
-    ProductSchema :  mongoose.model("Product",Schema)
+    productModel :  mongoose.model("Product",Schema)
 }

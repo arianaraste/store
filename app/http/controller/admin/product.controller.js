@@ -1,15 +1,18 @@
 const {  productModel } = require("../../../models/product");
 const { createProductSchema } = require("../../validators/admin/product.schema");
 const path = require("path");
-const {deleteFileInPublic} = require("../../../utills/function");
+const {deleteFileInPublic, ListOfImagesFromRequest} = require("../../../utills/function");
 const errors = require("http-errors");
+const { mongooseID_Validator } = require("../../validators/mongooseID.validator");
 class productController {
     async createProduct(req ,res, next){
         try {
             const productValidate = await createProductSchema.validateAsync(req.body);
-            req.body.images = path.join(productValidate.fileUploadPath, productValidate.filename);
-            const images = req.body.images;
-            const {title, decription, tags, category, text, price, count, discount, type, length, height, width, weight, colors, madein} = req.body
+            const images = ListOfImagesFromRequest(req?.files || [], req.body.fileUploadPath);
+            const {title, decription, tags, category,
+                 text, price, count, discount,
+                  type, length, height, width,
+                   weight, colors, madein} = req.body
             const supplier = req.user._id
             let features = {}
             if(!length){ features.length = 0}else{features.length = length};
@@ -55,7 +58,21 @@ class productController {
             next(error)
         }
     };
-    getProductById(){};
+    async getProductById(req, res, next){
+        try {
+        const {id} = req.params;
+        await mongooseID_Validator.validateAsync({});
+        const product = await productModel.findById(id);
+        console.log(product);
+        if(!product) throw errors.NotFound("product not found");
+        return res.status(200).json({
+            product
+        })
+        } catch (error) {
+            console.log(error);
+            next(error)
+        }
+    };
     updateProduct(){};
     deleteProduct(){};
 };

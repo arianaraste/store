@@ -83,7 +83,7 @@ function createRoute(req){
     const month = date.getMonth().toString();
     const day = date.getDate().toString();
     const url = req.url
-    const directory  = path.join(__dirname, "..", ".." , "public", "uploads", url ,  year , month, day);
+    const directory = path.join(__dirname, "..", ".." , "public", "uploads", url ,  year , month, day);
     req.body.fileUploadPath = directory;
     fs.mkdirSync(directory , {recursive : true});    
     return directory 
@@ -95,8 +95,13 @@ function deleteFileInPublic(fileAddress){
     }
     return
 };
-
-
+function ListOfImagesFromRequest(files, fileUploadPath) {
+    if (files?.length > 0) {
+        return (files.map(file => path.join(fileUploadPath, file.filename)))
+    } else {
+        return []
+    }
+}
 module.exports = {
     RandomNumberGenerator : randomNumber,
     OTPGenerator : OTPMaker,
@@ -105,4 +110,5 @@ module.exports = {
     verifyRefreshToken,
     createRoute,
     deleteFileInPublic,
+    ListOfImagesFromRequest : ListOfImagesFromRequest
 };

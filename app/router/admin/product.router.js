@@ -60,8 +60,11 @@ const router = require("express").Router();
  *                      minimum: 0
  *                      description: تعداد موجودی محصول
  *                  images:  
- *                      type: file
+ *                      type: array
  *                      description: تصاویر محصول
+ *                      items:
+ *                          type:   string
+ *                          format: binary
  *                  height:
  *                      type: number
  *                      minimum: 0
@@ -111,7 +114,7 @@ const router = require("express").Router();
  */
 
 
-router.post("/create-product", uploadFile.single("images"), stringToArray("tags"), productController.createProduct);
+router.post("/create-product", uploadFile.array("images",10), stringToArray("tags"), productController.createProduct);
 /**
  * @swagger
  *  /admin/product/product-list/:
@@ -124,9 +127,26 @@ router.post("/create-product", uploadFile.single("images"), stringToArray("tags"
  *                  description: succes
  */
 router.get("/product-list", productController.getAllProduct);
-/* router.patch();
-router.delete();
+/**
+ * @swagger 
+ *  paths:
+ *      /admin/product/find-by-id/{id}:
+ *          get: 
+ *              summary: find product by id
+ *              description: find product with param {id}
+ *              parameters:
+ *                  -   name: id
+ *                      descriptipon: product id
+ *                      in: path
+ *                      type: string
+ *                      required:   true
+ *                       
+ *              tags: [Product]
+ *              responses:
+ *                  200:
+ *                      descriptiopn: succes
  */
+router.get("/find-by-id/:id", productController.getProductById)
 module.exports = {
     productRoutes : router
 }

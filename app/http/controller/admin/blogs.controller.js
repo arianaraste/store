@@ -10,8 +10,7 @@ class blogsController extends Controller {
 
     async creatBlog(req , res , next){
         try {
-            console.log(req.body);
-            /* const blogValidate = await creatBlogSchema.validateAsync(req.body);
+            const blogValidate = await creatBlogSchema.validateAsync(req.body);
             req.body.cartimg = path.join(blogValidate.fileUploadPath, blogValidate.filename);
             const cartimg = req.body.cartimg;
             const {title, decription, tags, categories, body,gallery} = req.body
@@ -29,7 +28,7 @@ class blogsController extends Controller {
             res.status(200).json({
                 status : 200,
                 message : "blog with succesfully uploded"
-            }) */
+            })
         } catch (error) {
             deleteFileInPublic(req.body.cartimg);
             next(error)

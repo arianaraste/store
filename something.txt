@@ -4,3 +4,11 @@
     "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6IjA5MTUyMDU2NTc3IiwidXNlcklkIjoiNjVkZjI1YmI5MzkyNzEwMmU4MjJkOWI5IiwiaWF0IjoxNzE1Njk3OTk1LCJleHAiOjE3NDcyNTU1OTV9.Ili5YlRDsgJtK7NAFyOt8lHB5EKikr2sLFVjzi0dbIM"
   }
 }
+
+function ListOfImagesFromRequest(files, fileUploadPath) {
+    if (files?.length > 0) {
+        return ((files.map(file => path.join(fileUploadPath, file.filename))).map(item => item.replace(/\\/g, "/")))
+    } else {
+        return []
+    }
+}

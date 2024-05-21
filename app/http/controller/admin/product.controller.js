@@ -4,6 +4,7 @@ const path = require("path");
 const {deleteFileInPublic, ListOfImagesFromRequest} = require("../../../utills/function");
 const errors = require("http-errors");
 const { mongooseID_Validator } = require("../../validators/mongooseID.validator");
+const { default: mongoose } = require("mongoose");
 class productController {
     async createProduct(req ,res, next){
         try {
@@ -60,10 +61,9 @@ class productController {
     };
     async getProductById(req, res, next){
         try {
-        const {id} = req.params;
-        await mongooseID_Validator.validateAsync({});
-        const product = await productModel.findById(id);
-        console.log(product);
+        const {ID} = req.params;
+        await mongooseID_Validator.validateAsync({ID});
+        const product = await productModel.findById(ID);
         if(!product) throw errors.NotFound("product not found");
         return res.status(200).json({
             product
@@ -74,7 +74,23 @@ class productController {
         }
     };
     updateProduct(){};
-    deleteProduct(){};
+    async deleteProduct(req, res, next){
+        try {
+            const {ID} = req.params;
+            await mongooseID_Validator.validateAsync({ID})
+            const product = await productModel.findById(ID);
+            if(!product) throw errors.NotFound("product not found");
+            const removeProduct = await productModel.deleteOne({_id: ID});
+            if(removeProduct.deletedCount === 0 ) throw errors.InternalServerError("internal server error");
+            return res.status(200).json({
+                status : 200,
+                message : "product deleted"
+            })
+        } catch (error) {
+            console.log(error);
+            next(error)
+        }
+    };
 };
 
 module.exports = {

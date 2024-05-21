@@ -130,12 +130,12 @@ router.get("/product-list", productController.getAllProduct);
 /**
  * @swagger 
  *  paths:
- *      /admin/product/find-by-id/{id}:
+ *      /admin/product/find-by-id/{ID}:
  *          get: 
  *              summary: find product by id
  *              description: find product with param {id}
  *              parameters:
- *                  -   name: id
+ *                  -   name: ID
  *                      descriptipon: product id
  *                      in: path
  *                      type: string
@@ -146,7 +146,27 @@ router.get("/product-list", productController.getAllProduct);
  *                  200:
  *                      descriptiopn: succes
  */
-router.get("/find-by-id/:id", productController.getProductById)
+router.get("/find-by-id/:ID", productController.getProductById);
+/**
+ * @swagger 
+ *  paths:
+ *      /admin/product/remove/{ID}:
+ *          delete: 
+ *              summary: delete product by id
+ *              description: delete product with param {id}
+ *              parameters:
+ *                  -   name: ID
+ *                      descriptipon: product id
+ *                      in: path
+ *                      type: string
+ *                      required:   true
+ *                       
+ *              tags: [Product]
+ *              responses:
+ *                  200:
+ *                      descriptiopn: succes
+ */
+router. delete("/remove/:ID", productController.deleteProduct)
 module.exports = {
     productRoutes : router
 }

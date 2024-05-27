@@ -5,7 +5,8 @@ const errors = require("http-errors");
 const {SECRET_KEY, REFRESH_SECRET_KEY} = require("./constans");
 const redisClient = require("./redis_init")
 const path = require("path")
-const fs = require("fs")
+const fs = require("fs");
+const { log } = require("console");
 function randomNumber(){
    return Math.floor((Math.random() * 90000)+ 10000)
 };
@@ -84,14 +85,14 @@ function createRoute(req){
     const day = date.getDate().toString();
     const url = req.url
     const directory = path.join(__dirname, "..", ".." , "public", "uploads", url ,  year , month, day);
-    req.body.fileUploadPath = directory;
+    req.body.fileUploadPath = path.join("uploads", url, year, month, day);
     fs.mkdirSync(directory , {recursive : true});    
     return directory 
 };
 function deleteFileInPublic(fileAddress){
     if(fileAddress){
     const filePath = path.join(__dirname , ".." , ".." , fileAddress);
-    if(fs.existsSync(fileAddress)) fs.unlinkSync(fileAddress);
+    if(fs.existsSync(filePath)) fs.unlinkSync(filePath);
     }
     return
 };
@@ -101,7 +102,33 @@ function ListOfImagesFromRequest(files, fileUploadPath) {
     } else {
         return []
     }
-}
+};
+function setFeatures(body){
+    const {colors, length, height, width, weight, madein} = body;
+    let features = {};
+    features.colors= colors;
+            if(!length){ features.length = 0}else{features.length = length};
+            if(!height){ features.height = 0}else{features.height = height};
+            if(!width){ features.weight = 0}else{features.width = width};
+            if(!weight){ features.weight = 0}else{features.weight = weight};
+            if(!colors){ features.colors = 0}else{features.colors = colors};
+            if(!madein){ features.madein = 0}else{features.madein = madein};
+        return features;
+};
+function copyObject(object) {
+    return JSON.parse(JSON.stringify(object))
+};
+function deleteInvalidPropertyOnObject(object = {}, blackList = []){
+    let nullishData = ["0",""," ",0,null,undefined];
+     Object.keys(object).forEach(key => {
+        if(blackList.includes(key)) delete object[key];
+        if(typeof object[key] == "string") object[key].trim();
+        if(Array.isArray(object[key]) && object[key].length > 0) object[key] = object[key].map(item => item.trim());
+        if(Array.isArray(object[key]) && object[key].length == 0) delete object[key];
+        if(nullishData.includes(object[key])) delete object[key];
+     })
+};
+
 module.exports = {
     RandomNumberGenerator : randomNumber,
     OTPGenerator : OTPMaker,
@@ -110,5 +137,8 @@ module.exports = {
     verifyRefreshToken,
     createRoute,
     deleteFileInPublic,
-    ListOfImagesFromRequest : ListOfImagesFromRequest
+    ListOfImagesFromRequest : ListOfImagesFromRequest,
+    setFeatures,
+    deleteInvalidPropertyOnObject,
+    copyObject
 };

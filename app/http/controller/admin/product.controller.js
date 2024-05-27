@@ -1,10 +1,24 @@
 const {  productModel } = require("../../../models/product");
 const { createProductSchema } = require("../../validators/admin/product.schema");
 const path = require("path");
-const {deleteFileInPublic, ListOfImagesFromRequest} = require("../../../utills/function");
+const {deleteFileInPublic, ListOfImagesFromRequest, setFeatures, deleteInvalidPropertyOnObject, copyObject} = require("../../../utills/function");
 const errors = require("http-errors");
 const { mongooseID_Validator } = require("../../validators/mongooseID.validator");
 const { default: mongoose } = require("mongoose");
+const statusCode = require("http-status-codes");
+const BlackList = {
+    BOOKMARKS: "bookmarks",
+    LIKES: "likes",
+    DISLIKES: "dislikes",
+    COMMENTS: "comments",
+    SUPPLIER: "supplier",
+    WEIGHT: "weight",
+    WIDTH: "width",
+    LENGTH: "length",
+    HEIGHT: "height",
+    COLORS: "colors"
+  };
+Object.freeze(BlackList);
 class productController {
     async createProduct(req ,res, next){
         try {
@@ -12,16 +26,9 @@ class productController {
             const images = ListOfImagesFromRequest(req?.files || [], req.body.fileUploadPath);
             const {title, decription, tags, category,
                  text, price, count, discount,
-                  type, length, height, width,
-                   weight, colors, madein} = req.body
+                  type} = req.body
+            let features = setFeatures(req.body);
             const supplier = req.user._id
-            let features = {}
-            if(!length){ features.length = 0}else{features.length = length};
-            if(!height){ features.height = 0}else{features.height = height};
-            if(!width){ features.weight = 0}else{features.width = width};
-            if(!weight){ features.weight = 0}else{features.weight = weight};
-            if(!colors){ features.colors = 0}else{features.colors = colors};
-            if(!madein){ features.madein = 0}else{features.madein = madein};
             const product = await productModel.create({
                 title,
                 decription,
@@ -48,11 +55,22 @@ class productController {
     };
     async getAllProduct(req ,res ,next){
         try {
-        const products = await productModel.find({});
-        if(!products) throw errors.NotFound("didnt find any products");
-        return res.status(200).json({
+        const search = req.query.search;
+        let product;
+        if(search){
+            product = await productModel.find({
+                $text:{
+                    $search : new RegExp(search ,"ig")
+                }
+            })
+        }else{
+            product = await productModel.find({});
+            if(!product) throw errors.NotFounduk("didnt find any products");
+        };
+        console.log(product);
+        return res.status(statusCode.OK).json({
             data : {
-                products
+                product
             }
         })
         } catch (error) {
@@ -73,7 +91,32 @@ class productController {
             next(error)
         }
     };
-    updateProduct(){};
+    async updateProduct(req, res, next){ 
+        try {
+        const {ID} = req.params;
+        mongooseID_Validator.validateAsync({ID});
+        const product = await productModel.findById(ID);
+        if(!product) throw {status: statusCode.NOT_FOUND, message: "didnt find any product"};
+
+        
+        const body = copyObject(req.body);
+        body.images = ListOfImagesFromRequest(req?.files || [], req.body.fileUploadPath);
+        body.features = setFeatures(req.body); 
+        
+        let ProductBlackList  = Object.values(BlackList);
+        deleteInvalidPropertyOnObject(body, ProductBlackList);
+
+        const updateResult = await productModel.updateOne({_id : product._id}, {$set: body});
+        if(updateResult.modifiedCount == 0) throw {status: statusCode.INTERNAL_SERVER_ERROR, message: "server error"};
+        return res.status(statusCode.OK).json({
+            status: statusCode.OK,
+            message: "product updated"
+        })
+        } catch (error) {
+            console.log(error);
+            next(error)
+        }
+    };
     async deleteProduct(req, res, next){
         try {
             const {ID} = req.params;

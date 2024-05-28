@@ -24,6 +24,7 @@ const Schema = new mongoose.Schema({
         colors : [],
         madein : ""
     }},
+    color: {type: String, default: "none"},
     comment : {type : [CommentSchema] , defult : []},
     bookmark : {type : [mongoose.Types.ObjectId] , defult : []},
     like : {type : [mongoose.Types.ObjectId] , defult : []},

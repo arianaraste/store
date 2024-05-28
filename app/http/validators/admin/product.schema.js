@@ -1,5 +1,6 @@
 const createError = require("http-errors");
 const Joi = require("joi");
+const { Schema } = require("mongoose");
 
 const createProductSchema = Joi.object({
     title : Joi.string().min(1).max(60).error(createError.BadRequest("title is not correct")),

@@ -36,7 +36,7 @@ class UserAuthController extends Controller {
     };
     async confirmLogin(req , res , next){
         try {
-        await confirmLoginSchema.validateAsync(req.body);
+        await confirmLoginSchema.validateAsync(req.body);{}
         const {phoneNumber , Code} = req.body
         const user = await UserModel.findOne({phoneNumber});
         if(!user) throw errors.NotFound("کاربری یافت نشد");

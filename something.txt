@@ -12,3 +12,9 @@ function ListOfImagesFromRequest(files, fileUploadPath) {
         return []
     }
 }
+{
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6IjA5MTUyMDU2NTc3IiwidXNlcklkIjoiNjVkZjI1YmI5MzkyNzEwMmU4MjJkOWI5IiwiaWF0IjoxNzE2MzY4MTkzLCJleHAiOjE3MTYzNzE3OTN9.pFw660tPZfe_EvKCbiaD6jetSm2g3rAc_zub-gttRNk",
+    "SignRefreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6IjA5MTUyMDU2NTc3IiwidXNlcklkIjoiNjVkZjI1YmI5MzkyNzEwMmU4MjJkOWI5IiwiaWF0IjoxNzE2MzY4MTkzLCJleHAiOjE3NDc5MjU3OTN9.l1_PAhj1Y8TfqlCO9wskBqNjrMIRp7B-Os6qeyekQrA"
+  }
+}

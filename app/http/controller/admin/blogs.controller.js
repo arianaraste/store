@@ -146,7 +146,7 @@ class blogsController extends Controller {
             const blog = await BlogModel.findById(ID);
             if(!blog) throw errors.NotFound("didnt find the blog");
             const deleteBlog = await BlogModel.deleteOne({_id : ID});
-            if(deleteBlog.deletedCount === 0 ) throw errors.BadRequest("didnt delete blog");
+            if(deleteBlog.deletedCount === 0 ) throw errors.InternalServerError("didnt delete blog");
             return res.status(200).json({
                 status : 200 ,
                 message : "blog deleted"

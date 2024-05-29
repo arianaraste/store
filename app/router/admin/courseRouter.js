@@ -1,5 +1,7 @@
 const { courseController } = require("../../http/controller/admin/course.controller");
+const { stringToArray } = require("../../http/middlewares/stringToArray");
 const course = require("../../models/course");
+const { uploadFile } = require("../../utills/multer");
 
 const router = require("express").Router();
 /**
@@ -23,7 +25,7 @@ const router = require("express").Router();
  *                  - price
  *                  - discount
  *                  - count
- *                  - images
+ *                  - image
  *                  - type
  *              properties:
  *                  title:  
@@ -53,7 +55,7 @@ const router = require("express").Router();
  *                      type: number
  *                      minimum: 0
  *                      description: تعداد موجودی دوره
- *                  images:  
+ *                  image:  
  *                      type: string
  *                      description: تصاویر دوره
  *                      format: binary
@@ -131,10 +133,10 @@ router.get("/list", courseController.getListOfCoures);
  *          
  *          responses:
  *              201:
- *                  description : product created
+ *                  description : course created
  */
 
-router.post("/create-course", courseController.createCourse);
+router.post("/create-course",uploadFile.single("image"), stringToArray("tags"),courseController.createCourse);
 //router.delete();
 /**
  * @swagger 

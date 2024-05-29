@@ -1,7 +1,9 @@
 const { CourseSchema, courseModel } = require("../../../models/course");
 const Controller = require("../controllers");
 const statusCode = require("http-status-codes");
-const errors = require("http-errors")
+const errors = require("http-errors");
+const { createCourseSchema } = require("../../validators/admin/course.schema.js");
+const path = require("path");
 class courseController extends Controller {
     async getListOfCoures(req, res, next){
         try {
@@ -31,15 +33,33 @@ class courseController extends Controller {
             next(error)
         }
     };
-    createCourse(req, res, next){
+    async createCourse(req, res, next){
         try {
-            let course;
-            const body = req.body;
-            Object.keys(body).forEach(key => log.key)
-            console.log(course);
-            
-
+            const courseValidator = await createCourseSchema.validateAsync(req.body);
+            const {title, description, text, tags, category, price, discount, count, type,} = req.body;
+            const {fileUploadPath, filename} = req.body;
+            const teacher = req.user._id;
+            const image = path.join(fileUploadPath, filename);
+            if(Number(price) > 0 && type === "free") throw errors.BadRequest("دوره رایگان نمیتواند قیمت گذاری شود")
+            const createCourse = await courseModel.create({title,
+                 description,
+                  text,
+                   tags,
+                    category,
+                     price,
+                      discount,
+                       count,
+                        type,
+                         teacher,
+                         image
+                    });
+                    if(!createCourse._id) throw errors.InternalServerError("create course faild")
+                    return res.status(statusCode.CREATED).json({
+                        status: statusCode.CREATED,
+                        message: "Course created successfully"
+                })
         } catch (error) {
+            console.log(error);
             next(error)
         }
     };

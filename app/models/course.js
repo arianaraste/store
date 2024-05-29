@@ -1,6 +1,7 @@
 const { required, string } = require("joi");
 const { default: mongoose, VirtualType } = require("mongoose");
 const { CommentSchema } = require("./public.schema");
+const { text } = require("express");
 const Episodes = new mongoose.Schema({
     title : {type: String , required : true},
     description : {type: String},
@@ -39,7 +40,7 @@ const Schema = new mongoose.Schema({
         virtuals : true
     }
 });
-
+Schema.index({title: "text", description: "text", text: "tex"})
 module.exports = {
     courseModel :  mongoose.model("Course",Schema)
 }

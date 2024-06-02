@@ -2,6 +2,23 @@
  * @swagger
  *  components:
  *      schemas:
+ *          addChapter:
+ *              type: object
+ *              required:
+ *                  -   ID
+ *                  -   title
+ *              properties:
+ *                  ID:
+ *                     type:   string
+ *                     description:
+ *                     example:   62822e4ff68cdded54aa928d 
+ *                  title:
+ *                     type:   string
+ *                     description: title of chapter
+ *                     example: zero to hero java script course
+ *                  text:
+ *                     type: string
+ *                     description: text of chapter
  *          types:
  *              type: string
  *              enum:
@@ -89,7 +106,54 @@
  *                      $ref: '#/components/schemas/types'
  *                     
  */
-
+/**
+ * @swagger
+ *  definitions:
+ *      ListOfCourses:
+ *          type: object
+ *          properties:
+ *              statusCode: 
+ *                  type: integer
+ *                  example: 200
+ *              data:
+ *                  type: object
+ *                  properties:
+ *                      courses:
+ *                          type: array
+ *                          items:
+ *                              type: object
+ *                              properties:
+ *                                  _id:
+ *                                      type: string
+ *                                      example: "62822e4ff68cdded54aa928d"
+ *                                  title:
+ *                                      type: string
+ *                                      example: "title of course"
+ *                                  short_text:
+ *                                      type: string
+ *                                      example: "summary text of course"
+ *                                  text:
+ *                                      type: string
+ *                                      example: "text and describe of course"
+ *                                  status:
+ *                                      type: string
+ *                                      example: "notStarted | Completed | Holding"
+ *                                  time:
+ *                                      type: string
+ *                                      example: "01:22:34"
+ *                                  price:
+ *                                      type: integer
+ *                                      example: 250,000
+ *                                  discount:
+ *                                      type: interger
+ *                                      example: 20
+ *                                  studendtCount:
+ *                                      type: integer
+ *                                      example: 340
+ *                                  teacher:
+ *                                      type: string
+ *                                      example: "aryan araste"
+ */
 /**
  * @swagger
  *  paths:
@@ -106,6 +170,10 @@
  *              responses: 
  *                  200:
  *                      description: succes
+ *                      content:
+ *                          application/json: 
+ *                              schema:
+ *                                  $ref : '#/definitions/ListOfCourses'
  * 
  */
 
@@ -130,7 +198,6 @@
  *                  description : course created
  */
 
-//router.delete();
 /**
  * @swagger 
  *  paths:
@@ -155,4 +222,33 @@
  *                  200:
  *                      desciption: succes
  *  
+ */
+/**
+ * @swagger
+ *      paths:
+ *          /admin/course/add-chapter:
+ *              put:
+ *                  tags:   [Course]
+ *                  summary: add chapter of course
+ *                  description: push on chapter by update method
+ *                  requestBody:
+ *                      required: true
+ *                      content:
+ *                          application/x-www-form-urlencoded:
+ *                              schema:
+ *                                  $ref: '#/components/schemas/addChapter'
+ *                          application/json:
+ *                              schema:
+ *                                  $ref: '#/components/schemas/addChapter'
+ *                  responses:
+ *                      200:    
+ *                          description:
+ *                          content: 
+ *                              application/json:
+ *                                  schema:
+ *                                      $ref: '#/definitions/ListOfCourses'
+ *                              
+ *                  
+ *          
+ *                  
  */

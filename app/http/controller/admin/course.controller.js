@@ -1,9 +1,10 @@
 const { CourseSchema, courseModel } = require("../../../models/course");
 const Controller = require("../controllers");
-const statusCode = require("http-status-codes");
+const {StatusCodes: statusCode} = require("http-status-codes");
 const errors = require("http-errors");
 const { createCourseSchema } = require("../../validators/admin/course.schema.js");
 const path = require("path");
+const { mongooseID_Validator } = require("../../validators/mongooseID.validator.js");
 class courseController extends Controller {
     async getListOfCoures(req, res, next){
         try {
@@ -63,6 +64,30 @@ class courseController extends Controller {
             next(error)
         }
     };
+    async addChapter(req, res ,next){
+        try {
+            const {ID, title, text} = req.body;
+            await mongooseID_Validator.validateAsync({ID})
+            const course = await courseModel.findById(ID);
+            if(!course) throw {status : statusCode.NOT_FOUND, message : "can not find any course"};
+            const addChapter = await courseModel.updateOne({_id : ID},{$push :{
+                chapter : {
+                    title,text,Episodes : [], time : "00:00:00"
+                }
+            }});
+            if(addChapter.modifiedCount == 0) throw {status : statusCode.BAD_REQUEST , message : "update chapter faild"};
+            return res.status(statusCode.OK).json({
+                statusCode : statusCode.OK,
+                data : {
+                    message : "chapter updated"
+                }
+            })
+     
+        } catch (error) {
+            console.log(error);
+            next(error)
+        }
+    }
     deleteCourse(){};
     updateCourse(){};
 };

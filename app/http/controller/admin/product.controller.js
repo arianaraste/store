@@ -28,7 +28,7 @@ class productController {
                  text, price, count, discount,
                   type} = req.body
             let features = setFeatures(req.body);
-            const supplier = req.user._id
+            const supplier = req.user._id;
             const product = await productModel.create({
                 title,
                 decription,

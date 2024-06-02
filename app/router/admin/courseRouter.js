@@ -8,6 +8,7 @@ const router = require("express").Router();
 router.get("/list", courseController.getListOfCoures);
 router.post("/create-course",uploadFile.single("image"), stringToArray("tags"),courseController.createCourse);
 router.patch("/update/:ID", courseController.updateCourse);
+router.put("/add-chapter", courseController.addChapter);
 
 module.exports = {
     courseRouter :  router
